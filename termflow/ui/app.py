@@ -1,6 +1,6 @@
 from textual.app import App
 from textual.widgets import Header, Footer, Static
-from textual.containers import Grid, Container
+from textual.containers import Grid, Container, Center, Middle
 from termflow.panels.clock import ClockPanel
 from termflow.panels.todo import TodoPanel
 from termflow.panels.pomodoro import PomodoroPanel
@@ -30,9 +30,10 @@ HELP_TEXT = """
 Use [bold light_blue][school][/], [bold green][dev][/], or [bold yellow][life][/] in your tasks.
 """
 
-class HelpOverlay(Container):
+class HelpOverlay(Center):
     def compose(self):
-        yield Static(HELP_TEXT, id="help-content")
+        with Middle():
+            yield Static(HELP_TEXT, id="help-content")
 
 class TermFlowApp(App):
     CSS_PATH = "styles.tcss"
