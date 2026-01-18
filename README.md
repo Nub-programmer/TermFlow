@@ -28,7 +28,7 @@ termflow
 ```
 
 ### Keybindings
-
+- ':' : command pallete ( or click the circle on top left and see) 
 - `?` : Toggle Help Overlay
 - `q` : Quit Application
 - `Tab` : Cycle focus between panels
