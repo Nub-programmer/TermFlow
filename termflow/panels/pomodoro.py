@@ -19,8 +19,9 @@ class PomodoroPanel(Static):
         yield Label("[bold red]POMODORO[/]", classes="panel-header")
         yield Label(f"{config.get('pomodoro_duration', 25)}:00", id="timer")
         yield Label(f"Sessions today: {self.sessions}", id="sessions-count")
-        yield Button("Start/Pause", id="toggle", variant="success")
-        yield Button("Reset", id="reset", variant="primary")
+        with Static(classes="button-row"):
+            yield Button("Start/Pause", id="toggle", variant="success")
+            yield Button("Reset", id="reset", variant="primary")
 
     def on_mount(self) -> None:
         self.set_interval(1, self.tick)
@@ -41,15 +42,20 @@ class PomodoroPanel(Static):
         try:
             timer_label = self.query_one("#timer", Label)
             timer_label.update(f"{m:02}:{s:02}")
-        except Exception:
+        except:
             pass
 
+    def action_toggle(self) -> None:
+        self.timer_active = not self.timer_active
+
+    def action_reset(self) -> None:
+        self.timer_active = False
+        config = load_config()
+        self.time_left = config.get("pomodoro_duration", 25) * 60
+        self.update_timer()
+
     def on_button_pressed(self, event: Button.Pressed) -> None:
-        button_id: Any = event.button.id
-        if button_id == "toggle":
-            self.timer_active = not self.timer_active
-        elif button_id == "reset":
-            self.timer_active = False
-            config = load_config()
-            self.time_left = config.get("pomodoro_duration", 25) * 60
-            self.update_timer()
+        if event.button.id == "toggle":
+            self.action_toggle()
+        elif event.button.id == "reset":
+            self.action_reset()

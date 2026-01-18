@@ -1,10 +1,12 @@
-from textual.app import App
+from textual.app import App, ComposeResult
 from textual.widgets import Header, Footer, Static
-from textual.containers import Grid, Container, Center, Middle
+from textual.containers import Grid, Center, Middle, Vertical
+from textual.binding import Binding
 from termflow.panels.clock import ClockPanel
 from termflow.panels.todo import TodoPanel
 from termflow.panels.pomodoro import PomodoroPanel
 from termflow.panels.info import InfoPanel
+import sys
 
 ASCII_LOGO = """
  [bold blue]
@@ -21,29 +23,35 @@ ASCII_LOGO = """
 HELP_TEXT = """
 [bold underline]Keyboard Shortcuts[/]
 
-[bold]?[/] - Toggle Help
-[bold]q[/] - Quit
+[bold]?[/] - Toggle Help Overlay
+[bold]q[/] - Quit TermFlow
 [bold]Tab[/] - Cycle Focus
 [bold]Enter[/] - Submit Todo / Toggle Task
+[bold]s[/] - Start/Pause Pomodoro
+[bold]r[/] - Reset Pomodoro
 
 [bold underline]Todo Tags[/]
 Use [bold light_blue][school][/], [bold green][dev][/], or [bold yellow][life][/] in your tasks.
+
+[bold dim]Press any key or ? to close[/]
 """
 
 class HelpOverlay(Center):
-    def compose(self):
+    def compose(self) -> ComposeResult:
         with Middle():
             yield Static(HELP_TEXT, id="help-content")
 
 class TermFlowApp(App):
-    CSS_PATH = "styles.tcss"
+    CSS_PATH = "termflow/ui/styles.tcss"
     BINDINGS = [
-        ("q", "quit", "Quit"),
-        ("?", "toggle_help", "Help")
+        Binding("q", "quit", "Quit", show=True),
+        Binding("?", "toggle_help", "Help", show=True),
+        Binding("s", "toggle_pomodoro", "Start/Pause", show=True),
+        Binding("r", "reset_pomodoro", "Reset", show=True),
     ]
 
-    def compose(self):
-        yield Header()
+    def compose(self) -> ComposeResult:
+        yield Header(show_clock=True)
         yield Static(ASCII_LOGO, id="logo")
         yield Grid(
             TodoPanel(id="todo"),
@@ -54,12 +62,26 @@ class TermFlowApp(App):
         yield HelpOverlay(id="help-overlay")
         yield Footer()
 
-    def on_mount(self):
+    def on_mount(self) -> None:
         self.query_one("#help-overlay").display = False
 
-    def action_toggle_help(self):
+    def action_toggle_help(self) -> None:
         overlay = self.query_one("#help-overlay")
         overlay.display = not overlay.display
+
+    def action_toggle_pomodoro(self) -> None:
+        try:
+            pomodoro = self.query_one(PomodoroPanel)
+            pomodoro.action_toggle()
+        except:
+            pass
+
+    def action_reset_pomodoro(self) -> None:
+        try:
+            pomodoro = self.query_one(PomodoroPanel)
+            pomodoro.action_reset()
+        except:
+            pass
 
 if __name__ == "__main__":
     app = TermFlowApp()
