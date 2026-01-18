@@ -55,14 +55,11 @@ class TermFlowApp(App):
         yield Footer()
 
     def on_mount(self):
-        self.query_one("#help-overlay").styles.display = "none"
+        self.query_one("#help-overlay").display = False
 
     def action_toggle_help(self):
         overlay = self.query_one("#help-overlay")
-        if overlay.styles.display == "none":
-            overlay.styles.display = "block"
-        else:
-            overlay.styles.display = "none"
+        overlay.display = not overlay.display
 
 if __name__ == "__main__":
     app = TermFlowApp()

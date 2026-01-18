@@ -38,10 +38,7 @@ Grid {
     background: $surface;
     border: double $primary;
     padding: 1 2;
-}
-
-#help-overlay.visible {
-    display: block;
+    layer: overlay;
 }
 
 #help-content {
