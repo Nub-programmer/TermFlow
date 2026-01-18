@@ -28,7 +28,6 @@ Grid {
     text-style: bold;
     margin: 1;
     color: $warning;
-    font-size: 150%;
 }
 
 #help-overlay {
