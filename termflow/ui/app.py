@@ -1,6 +1,6 @@
 from textual.app import App
-from textual.containers import Container, Grid
 from textual.widgets import Header, Footer, Static
+from textual.containers import Grid
 from termflow.panels.clock import ClockPanel
 from termflow.panels.todo import TodoPanel
 from termflow.panels.pomodoro import PomodoroPanel
@@ -33,4 +33,5 @@ class TermFlowApp(App):
         yield Footer()
 
 if __name__ == "__main__":
-    TermFlowApp().run()
+    app = TermFlowApp()
+    app.run()

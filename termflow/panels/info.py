@@ -4,9 +4,9 @@ from termflow.utils.quotes import get_quote
 
 class InfoPanel(Static):
     def compose(self):
-        yield Label("[bold green]INFO[/]")
+        yield Label("[bold green]INFO[/]", classes="panel-header")
         yield Label("Weather: Loading...", id="weather")
-        yield Label("\n[bold yellow]QUOTE[/]")
+        yield Label("\n[bold yellow]QUOTE[/]", classes="panel-header")
         yield Label("Loading...", id="quote")
 
     def on_mount(self):
@@ -18,5 +18,5 @@ class InfoPanel(Static):
     async def fetch_data(self):
         w = get_weather()
         q = get_quote()
-        self.query_one("#weather").update(f"Weather: {w}")
-        self.query_one("#quote").update(q)
+        self.query_one("#weather", Label).update(f"Weather: {w}")
+        self.query_one("#quote", Label).update(q)
