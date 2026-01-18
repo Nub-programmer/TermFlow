@@ -1,5 +1,5 @@
 from textual.app import App
-from textual.widgets import Header, Footer, Static, Label
+from textual.widgets import Header, Footer, Static
 from textual.containers import Grid, Container
 from termflow.panels.clock import ClockPanel
 from termflow.panels.todo import TodoPanel
@@ -54,13 +54,14 @@ class TermFlowApp(App):
         yield Footer()
 
     def on_mount(self):
-        self.query_one("#help-overlay").visible = False
+        self.query_one("#help-overlay").styles.display = "none"
 
     def action_toggle_help(self):
         overlay = self.query_one("#help-overlay")
-        overlay.visible = not overlay.visible
-        if overlay.visible:
-            overlay.styles.z_index = 100
+        if overlay.styles.display == "none":
+            overlay.styles.display = "block"
+        else:
+            overlay.styles.display = "none"
 
 if __name__ == "__main__":
     app = TermFlowApp()

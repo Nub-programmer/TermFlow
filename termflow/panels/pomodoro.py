@@ -8,7 +8,7 @@ if TYPE_CHECKING:
 
 class PomodoroPanel(Static):
     time_left: reactive[int] = reactive(25 * 60)
-    is_running: reactive[bool] = reactive(False)
+    timer_active: reactive[bool] = reactive(False)
     sessions: reactive[int] = reactive(0)
 
     def compose(self) -> "ComposeResult":
@@ -26,12 +26,12 @@ class PomodoroPanel(Static):
         self.set_interval(1, self.tick)
 
     def tick(self) -> None:
-        if self.is_running:
+        if self.timer_active:
             if self.time_left > 0:
                 self.time_left -= 1
                 self.update_timer()
             else:
-                self.is_running = False
+                self.timer_active = False
                 self.sessions = increment_pomodoro_session()
                 self.query_one("#sessions-count", Label).update(f"Sessions today: {self.sessions}")
                 self.update_timer()
@@ -47,9 +47,9 @@ class PomodoroPanel(Static):
     def on_button_pressed(self, event: Button.Pressed) -> None:
         button_id: Any = event.button.id
         if button_id == "toggle":
-            self.is_running = not self.is_running
+            self.timer_active = not self.timer_active
         elif button_id == "reset":
-            self.is_running = False
+            self.timer_active = False
             config = load_config()
             self.time_left = config.get("pomodoro_duration", 25) * 60
             self.update_timer()
