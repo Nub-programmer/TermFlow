@@ -1,12 +1,11 @@
 from textual.app import App, ComposeResult
 from textual.widgets import Header, Footer, Static
-from textual.containers import Grid, Center, Middle, Vertical
+from textual.containers import Grid, Center, Middle
 from textual.binding import Binding
 from termflow.panels.clock import ClockPanel
 from termflow.panels.todo import TodoPanel
 from termflow.panels.pomodoro import PomodoroPanel
 from termflow.panels.info import InfoPanel
-import sys
 
 ASCII_LOGO = """
  [bold blue]
@@ -42,7 +41,7 @@ class HelpOverlay(Center):
             yield Static(HELP_TEXT, id="help-content")
 
 class TermFlowApp(App):
-    CSS_PATH = "termflow/ui/styles.tcss"
+    CSS_PATH = "styles.tcss"
     BINDINGS = [
         Binding("q", "quit", "Quit", show=True),
         Binding("?", "toggle_help", "Help", show=True),
@@ -72,14 +71,14 @@ class TermFlowApp(App):
     def action_toggle_pomodoro(self) -> None:
         try:
             pomodoro = self.query_one(PomodoroPanel)
-            pomodoro.action_toggle()
+            pomodoro.handle_toggle()
         except:
             pass
 
     def action_reset_pomodoro(self) -> None:
         try:
             pomodoro = self.query_one(PomodoroPanel)
-            pomodoro.action_reset()
+            pomodoro.handle_reset()
         except:
             pass
 

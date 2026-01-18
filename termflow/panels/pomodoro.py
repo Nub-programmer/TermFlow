@@ -45,10 +45,10 @@ class PomodoroPanel(Static):
         except:
             pass
 
-    def action_toggle(self) -> None:
+    def handle_toggle(self) -> None:
         self.timer_active = not self.timer_active
 
-    def action_reset(self) -> None:
+    def handle_reset(self) -> None:
         self.timer_active = False
         config = load_config()
         self.time_left = config.get("pomodoro_duration", 25) * 60
@@ -56,6 +56,6 @@ class PomodoroPanel(Static):
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         if event.button.id == "toggle":
-            self.action_toggle()
+            self.handle_toggle()
         elif event.button.id == "reset":
-            self.action_reset()
+            self.handle_reset()
