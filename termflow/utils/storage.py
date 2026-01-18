@@ -1,5 +1,4 @@
 import json
-import os
 from datetime import datetime
 from pathlib import Path
 import platformdirs
@@ -46,7 +45,10 @@ def load_config():
     try:
         import tomllib as toml # Python 3.11+
     except ImportError:
-        import tomli as toml
+        try:
+            import tomli as toml # type: ignore
+        except ImportError:
+            return DEFAULT_CONFIG
         
     try:
         with open(CONFIG_FILE, "rb") as f:
@@ -62,7 +64,7 @@ def save_config(config):
     ensure_dirs()
     try:
         import tomli_w as tomlw
-        with open(CONFIG_FILE, "w") as f:
+        with open(CONFIG_FILE, "wb") as f:
             tomlw.dump(config, f)
     except:
         pass
