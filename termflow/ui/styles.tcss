@@ -1,100 +1,30 @@
-Screen {
-    layout: grid;
+Grid {
     grid-size: 2 3;
     grid-columns: 1fr 1fr;
-    grid-rows: 1fr 2fr 2fr;
+    grid-rows: 1fr 1fr 1fr;
     grid-gutter: 1;
     padding: 1;
 }
 
-Clock {
-    background: $primary-darken-2;
-    color: white;
+#logo {
     content-align: center middle;
-    text-align: center;
-    border: heavy $primary;
-    height: 100%;
-}
-
-InfoPanel {
-    background: $secondary-darken-2;
-    border: heavy $secondary;
-    padding: 1;
-}
-
-TodoPanel {
-    row-span: 3;
-    background: $surface;
-    border: heavy $accent;
-    padding: 1;
-}
-
-PomodoroPanel {
-    background: $surface;
-    border: heavy $warning;
-    padding: 1;
-    align: center middle;
-}
-
-.panel-header {
-    text-align: center;
-    background: $panel-lighten-1;
-    color: $text;
-    width: 100%;
-    padding: 0 1;
-    margin-bottom: 1;
-}
-
-#todo-input {
-    margin-bottom: 1;
-}
-
-#todo-list {
-    height: 1fr;
-    border: solid $accent-darken-1;
-}
-
-ListItem {
-    padding: 1;
-}
-
-.strike {
-    text-style: strike;
-    color: $text-disabled;
-}
-
-.help-text {
-    text-align: center;
-    color: $text-muted;
-    margin-top: 1;
-    text-style: italic;
-}
-
-#timer-display {
-    text-align: center;
-    text-style: bold;
-    color: $warning-lighten-1;
-    margin: 1 0;
-    width: 100%;
-    content-align: center middle; 
-}
-
-#timer-progress {
-    margin: 1 2;
-}
-
-.button-container {
-    align: center middle;
     height: auto;
-    margin-top: 1;
+    margin: 1;
 }
 
-Button {
-    margin: 0 1;
+#todo {
+    row-span: 3;
+    border: double $accent;
+    padding: 1;
 }
 
-#mode-label {
-    text-align: center;
-    margin-top: 1;
-    color: $text-muted;
+#clock, #pomodoro, #info {
+    border: rounded $primary;
+    padding: 1;
+    content-align: center middle;
+}
+
+#timer {
+    font-size: 150%;
+    margin: 1;
 }

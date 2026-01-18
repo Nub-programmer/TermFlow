@@ -1,22 +1,9 @@
 import requests
 
-def get_random_quote():
-    """
-    Fetches a random quote from DummyJSON.
-    """
-    url = "https://dummyjson.com/quotes/random"
-    
+def get_quote():
     try:
-        response = requests.get(url, timeout=5)
-        response.raise_for_status()
+        response = requests.get("https://dummyjson.com/quotes/random", timeout=5)
         data = response.json()
-        return {
-            "text": data.get("quote", "Stay productive!"),
-            "author": data.get("author", "Unknown")
-        }
-    except Exception as e:
-        return {
-            "text": "The secret of getting ahead is getting started.",
-            "author": "Mark Twain",
-            "error": str(e)
-        }
+        return f"\"{data['quote']}\" - {data['author']}"
+    except:
+        return "Stay focused and productive!"

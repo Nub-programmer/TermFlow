@@ -1,5 +1,6 @@
 # TermFlow
 
+<<<<<<< HEAD
 **TermFlow** or Temrflow-cli ( command line interface) is a production-grade, minimalist terminal productivity dashboard built entirely in Python using the [Textual](https://textual.textualize.io/) framework. Designed for developers and terminal enthusiasts, it provides a distraction-free environment to manage your time and tasks.
 
 ## Features
@@ -17,16 +18,35 @@ Ensure you have Python 3.8+ installed.
 
 ```bash
 pip install termflow-cli
+=======
+A minimal terminal productivity dashboard built with Python.
+
+## Features
+
+- **Clock**: Live date and time display.
+- **Todo List**: Manage your daily tasks (persisted in `todos.json`).
+- **Pomodoro Timer**: Stay focused with work/break cycles.
+- **Info Panel**: Live weather (NYC) and motivational quotes.
+
+## Installation
+
+```bash
+pip install -r requirements.txt
+>>>>>>> bf93974 (Remove all web-related files and refactor the project structure)
 ```
 
 ## Usage
 
+<<<<<<< HEAD
 Launch the dashboard directly from your terminal:
 
+=======
+>>>>>>> bf93974 (Remove all web-related files and refactor the project structure)
 ```bash
 termflow
 ```
 
+<<<<<<< HEAD
 ### Keybindings
 - ':' : command pallete ( or click the circle on top left and see) 
 - `?` : Toggle Help Overlay
@@ -62,3 +82,9 @@ Join our community: [https://dsc.gg/axoninnova](https://dsc.gg/axoninnova)
 ## License
 
 MIT © 2026 TermFlow
+=======
+## Credits
+
+Made by **Atharv** (founder) and the **Axoninnoova** community.
+Join the community: [https://dsc.gg/axoninnova](https://dsc.gg/axoninnova)
+>>>>>>> bf93974 (Remove all web-related files and refactor the project structure)
