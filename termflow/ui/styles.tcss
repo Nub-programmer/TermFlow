@@ -19,12 +19,13 @@ Grid {
 }
 
 #clock, #pomodoro, #info {
-    border: rounded $primary;
+    border: round $primary;
     padding: 1;
     content-align: center middle;
 }
 
 #timer {
-    font-size: 150%;
+    text-style: bold;
     margin: 1;
+    color: $warning;
 }
