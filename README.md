@@ -1,6 +1,7 @@
 # TermFlow
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 **TermFlow** or Temrflow-cli ( command line interface) is a production-grade, minimalist terminal productivity dashboard built entirely in Python using the [Textual](https://textual.textualize.io/) framework. Designed for developers and terminal enthusiasts, it provides a distraction-free environment to manage your time and tasks.
 
 ## Features
@@ -20,22 +21,32 @@ Ensure you have Python 3.8+ installed.
 pip install termflow-cli
 =======
 A minimal terminal productivity dashboard built with Python.
+=======
+Minimal terminal productivity dashboard built with Python and the [Textual](https://textual.textualize.io/) TUI framework.
+>>>>>>> 9ee4b63 (Update documentation to reflect application features and installation)
 
 ## Features
 
-- **Clock**: Live date and time display.
-- **Todo List**: Manage your daily tasks (persisted in `todos.json`).
-- **Pomodoro Timer**: Stay focused with work/break cycles.
-- **Info Panel**: Live weather (NYC) and motivational quotes.
+- **Real-time Clock**: Live time and date display.
+- **Todo List**: Persistent task management (stored in `todos.json`).
+- **Pomodoro Timer**: 25-minute timer with start/pause/reset.
+- **Info Panel**: Live weather updates (Open-Meteo) and motivational quotes (DummyJSON).
 
 ## Installation
 
 ```bash
+<<<<<<< HEAD
 pip install -r requirements.txt
 >>>>>>> bf93974 (Remove all web-related files and refactor the project structure)
 ```
 
 ## Usage
+=======
+pip install textual requests
+```
+
+## Running the App
+>>>>>>> 9ee4b63 (Update documentation to reflect application features and installation)
 
 <<<<<<< HEAD
 Launch the dashboard directly from your terminal:
@@ -85,6 +96,16 @@ MIT © 2026 TermFlow
 =======
 ## Credits
 
+<<<<<<< HEAD
 Made by **Atharv** (founder) and the **Axoninnoova** community.
 Join the community: [https://dsc.gg/axoninnova](https://dsc.gg/axoninnova)
 >>>>>>> bf93974 (Remove all web-related files and refactor the project structure)
+=======
+- **Atharv**: Founder and Lead Developer.
+- **Axoninnoova Community**: Supporting the growth of open-source terminal tools.
+  - Join us: [https://dsc.gg/axoninnova](https://dsc.gg/axoninnova)
+
+## License
+
+MIT
+>>>>>>> 9ee4b63 (Update documentation to reflect application features and installation)
