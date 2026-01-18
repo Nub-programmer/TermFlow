@@ -1,6 +1,7 @@
 from textual.widgets import Static, Label
 from termflow.utils.weather import get_weather
 from termflow.utils.quotes import get_quote
+from termflow.utils.storage import load_config
 
 class InfoPanel(Static):
     def compose(self):
@@ -16,10 +17,18 @@ class InfoPanel(Static):
         self.run_worker(self.fetch_data)
 
     async def fetch_data(self):
-        from termflow.utils.storage import load_config
         config = load_config()
         city = config.get("city", "New York")
-        w = get_weather(city) # Note: Weather utility needs to be updated to accept city
-        q = get_quote()
+        
+        try:
+            w = get_weather(city)
+        except:
+            w = "N/A (Offline)"
+            
+        try:
+            q = get_quote()
+        except:
+            q = "Stay productive! (Offline)"
+            
         self.query_one("#weather", Label).update(f"Weather ({city}): {w}")
         self.query_one("#quote", Label).update(q)

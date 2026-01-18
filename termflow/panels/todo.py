@@ -5,15 +5,16 @@ import re
 class TodoPanel(Static):
     def compose(self):
         yield Label("[bold underline]TODO LIST[/]")
-        yield Input(placeholder="New task... (use [tag] for colors)")
+        yield Input(placeholder="New task... (use [tag] for colors)", id="todo-input")
         yield ListView(id="todo-list")
 
     def on_mount(self):
         self.refresh_list()
 
+    def focus_input(self):
+        self.query_one("#todo-input", Input).focus()
+
     def format_todo_text(self, text):
-        # Support simple tags like [school], [dev], [life]
-        # [school] -> light_blue, [dev] -> green, [life] -> yellow
         text = re.sub(r'\[school\]', '[bold light_blue][school][/]', text, flags=re.IGNORECASE)
         text = re.sub(r'\[dev\]', '[bold green][dev][/]', text, flags=re.IGNORECASE)
         text = re.sub(r'\[life\]', '[bold yellow][life][/]', text, flags=re.IGNORECASE)
@@ -35,10 +36,22 @@ class TodoPanel(Static):
             event.input.value = ""
             self.refresh_list()
 
-    def on_list_view_selected(self, event):
-        todos = load_todos()
-        idx = event.list_view.index
-        if 0 <= idx < len(todos):
-            todos[idx]['done'] = not todos[idx]['done']
-            save_todos(todos)
-            self.refresh_list()
+    def on_key(self, event):
+        if event.key == "space":
+            lv = self.query_one(ListView)
+            if lv.index is not None:
+                todos = load_todos()
+                idx = lv.index
+                if 0 <= idx < len(todos):
+                    todos[idx]['done'] = not todos[idx]['done']
+                    save_todos(todos)
+                    self.refresh_list()
+        elif event.key == "d":
+            lv = self.query_one(ListView)
+            if lv.index is not None:
+                todos = load_todos()
+                idx = lv.index
+                if 0 <= idx < len(todos):
+                    todos.pop(idx)
+                    save_todos(todos)
+                    self.refresh_list()
