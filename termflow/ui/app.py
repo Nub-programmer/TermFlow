@@ -26,21 +26,20 @@ class HelpScreen(ModalScreen):
         Binding("escape", "dismiss", "Close"),
         Binding("q", "dismiss", "Close"),
         Binding("h", "dismiss", "Close"),
-        Binding("question_mark", "dismiss", "Close"),
     ]
     
     def compose(self) -> ComposeResult:
         help_content = f"""
 [bold underline]Keyboard Shortcuts[/]
 
-[bold]A[/] Add Task
-[bold]D[/] Delete Task
-[bold]Space[/] Toggle Task
-[bold]P[/] Pomodoro Start/Pause
-[bold]R[/] Pomodoro Reset
-[bold]I[/] Info Panel
-[bold]H / ?[/] Help Overlay
-[bold]Q[/] Quit
+[bold]A[/] - Add Task
+[bold]D[/] - Delete Task
+[bold]Space[/] - Toggle Task
+[bold]P[/] - Pomodoro Start/Pause
+[bold]R[/] - Pomodoro Reset
+[bold]I[/] - Info Panel
+[bold]H / ?[/] - Help Overlay
+[bold]Q[/] - Quit
 
 [bold underline]Paths[/]
 Config: {CONFIG_FILE}
@@ -108,13 +107,32 @@ class TermFlowApp(App):
         self.push_screen(InfoScreen())
 
     def action_toggle_pomodoro(self) -> None:
-        self.query_one(PomodoroPanel).handle_toggle()
+        try:
+            self.query_one(PomodoroPanel).handle_toggle()
+        except:
+            pass
 
     def action_reset_pomodoro(self) -> None:
-        self.query_one(PomodoroPanel).handle_reset()
+        try:
+            self.query_one(PomodoroPanel).handle_reset()
+        except:
+            pass
 
     def action_add_task(self) -> None:
-        self.query_one(TodoPanel).focus_input()
+        try:
+            todo = self.query_one(TodoPanel)
+            todo.focus_input()
+        except:
+            pass
+
+    def on_key(self, event) -> None:
+        # Global key handler to ensure these always work regardless of focus
+        if event.key == "i":
+            event.stop()
+            self.action_toggle_info()
+        elif event.key == "h" or event.key == "?":
+            event.stop()
+            self.action_toggle_help()
 
 def main():
     app = TermFlowApp()
