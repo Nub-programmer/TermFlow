@@ -1,6 +1,6 @@
 from textual.app import App, ComposeResult
-from textual.widgets import Header, Footer, Static, Label
-from textual.containers import Grid, Center, Middle, Container
+from textual.widgets import Header, Footer, Static
+from textual.containers import Grid, Center, Middle
 from textual.binding import Binding
 from textual.screen import ModalScreen
 from termflow.panels.clock import ClockPanel
@@ -22,7 +22,12 @@ ASCII_LOGO = """
 """
 
 class HelpScreen(ModalScreen):
-    BINDINGS = [("escape,q,h,?", "dismiss", "Close")]
+    BINDINGS = [
+        Binding("escape", "dismiss", "Close"),
+        Binding("q", "dismiss", "Close"),
+        Binding("h", "dismiss", "Close"),
+        Binding("question_mark", "dismiss", "Close"),
+    ]
     
     def compose(self) -> ComposeResult:
         help_content = f"""
@@ -41,14 +46,18 @@ class HelpScreen(ModalScreen):
 Config: {CONFIG_FILE}
 Data: {DATA_DIR}
 
-[bold dim]Press ESC or Q to close[/]
+[bold dim]Press ESC, Q, or H to close[/]
 """
         with Center():
             with Middle():
                 yield Static(help_content, id="help-content", classes="modal-panel")
 
 class InfoScreen(ModalScreen):
-    BINDINGS = [("escape,q,i", "dismiss", "Close")]
+    BINDINGS = [
+        Binding("escape", "dismiss", "Close"),
+        Binding("q", "dismiss", "Close"),
+        Binding("i", "dismiss", "Close"),
+    ]
     
     def compose(self) -> ComposeResult:
         info_content = """
@@ -63,7 +72,7 @@ Community: https://dsc.gg/axoninnova
 Explore the interface. 
 TermFlow reveals itself gradually.
 
-[bold dim]Press ESC or Q to close[/]
+[bold dim]Press ESC, Q, or I to close[/]
 """
         with Center():
             with Middle():
@@ -73,7 +82,8 @@ class TermFlowApp(App):
     CSS_PATH = "styles.tcss"
     BINDINGS = [
         Binding("q", "quit", "Quit", show=True),
-        Binding("h,?", "toggle_help", "Help", show=True),
+        Binding("h", "toggle_help", "Help", show=True),
+        Binding("question_mark", "toggle_help", "Help", show=False),
         Binding("i", "toggle_info", "Info", show=True),
         Binding("p", "toggle_pomodoro", "Pomodoro", show=True),
         Binding("r", "reset_pomodoro", "Reset", show=True),
