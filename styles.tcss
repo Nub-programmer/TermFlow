@@ -30,20 +30,23 @@ Grid {
     color: $warning;
 }
 
-#help-overlay {
-    display: none;
-    width: 60;
-    height: 32;
+.modal-panel {
+    width: 50;
+    height: auto;
+    max-height: 25;
     background: $surface;
     border: double $primary;
     padding: 1 2;
-    layer: overlay;
     content-align: center middle;
+    text-align: center;
 }
 
 #help-content {
-    width: 100%;
-    height: 100%;
+    border: double $primary;
+}
+
+#info-content {
+    border: double $accent;
 }
 
 #sessions-count {
@@ -64,33 +67,4 @@ Grid {
 .panel-header {
     text-style: bold underline;
     margin-bottom: 1;
-}
-
-#command-palette-container {
-    width: 40;
-    height: 12;
-    background: $surface;
-    border: thick $primary;
-    padding: 1;
-    align: center middle;
-}
-
-#palette-header {
-    width: 100%;
-    content-align: center middle;
-    margin-bottom: 1;
-}
-
-#palette-list {
-    height: 6;
-    border: none;
-}
-
-#info-overlay-content {
-    width: 60;
-    height: 25;
-    background: $surface;
-    border: double $accent;
-    padding: 1 2;
-    content-align: center middle;
 }

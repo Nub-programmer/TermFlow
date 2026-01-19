@@ -1,0 +1,68 @@
+You are working on a terminal-based productivity app called TermFlow.
+
+GOAL:
+- Fix the HELP section UI issue where it overlaps or breaks layout.
+- Add an INFO section that fits naturally into the existing interface.
+- Ensure both HELP and INFO follow the TermFlow philosophy: minimal, keyboard-first, distraction-free.
+
+CORE PHILOSOPHY:
+TermFlow is not a typical productivity app.
+It is a terminal-first focus environment designed to reduce cognitive load.
+Every panel must feel intentional, calm, and non-intrusive.
+
+RULES:
+1. DO NOT add new major features or workflows.
+2. DO NOT change layout proportions unless absolutely required to fix rendering.
+3. DO NOT introduce mouse-dependent interactions.
+4. Respect terminal constraints: fixed width, monospace text, predictable spacing.
+5. Use only existing colors, borders, and spacing styles already present in TermFlow.
+
+HELP SECTION REQUIREMENTS:
+- Render strictly inside its allocated panel.
+- Wrap text correctly within panel width.
+- Never overflow or overlap any other panel.
+- Support vertical scrolling or pagination if content exceeds height.
+- Content must be concise, actionable, and scannable.
+- No paragraph longer than 2 lines.
+
+HELP CONTENT GUIDELINES:
+- Focus on keyboard usage and discovery.
+- Use short command hints like:
+  - "Press H to toggle help"
+  - "Use arrow keys to navigate panels"
+  - "Press : for command mode"
+- Avoid verbose explanations or marketing language.
+
+INFO SECTION REQUIREMENTS:
+- INFO should be accessible via a keyboard action (for example: pressing `i`, `.`, or a command).
+- INFO must render inside its own panel and follow the same layout rules as HELP.
+- INFO content is informational, not instructional.
+
+INFO CONTENT SHOULD INCLUDE:
+- What TermFlow is (1–2 lines max)
+- Creator credit (Nub-programmer / Atharv)
+- Community / server invite (short, clean link text)
+- A subtle exploratory hint, e.g.:
+  - "Explore the interface. TermFlow reveals itself gradually."
+  - "Press H for help. Press I for info."
+
+INFO TONE:
+- Calm, minimal, confident.
+- No hype, no emojis, no clutter.
+- Feels like a terminal tool written by someone who values focus.
+
+TASKS:
+- Inspect the current HELP rendering logic.
+- Identify and fix width/height calculation issues.
+- Add proper overflow handling (scrolling or pagination).
+- Implement INFO panel access via keyboard.
+- Ensure HELP and INFO align visually and conceptually with other panels.
+- Test behavior across different terminal sizes.
+
+AFTER FIX:
+- Briefly explain what caused the HELP overlap issue.
+- List exactly what was changed (layout, rendering, overflow handling).
+- Confirm that HELP and INFO now:
+  - Stay within bounds
+  - Do not overlap other panels
+  - Match the TermFlow philosophy
