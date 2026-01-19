@@ -1,0 +1,2 @@
+[console_scripts]
+termflow = termflow.ui.app:main

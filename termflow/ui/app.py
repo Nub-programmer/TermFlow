@@ -29,6 +29,7 @@ HELP_TEXT = f"""
 [bold]Space[/] - Toggle Task Completion
 [bold]p[/] - Start/Pause Pomodoro
 [bold]r[/] - Reset Pomodoro
+[bold]c[/] - Command Palette (Help/Info)
 [bold]?[/][bold]h[/] - Toggle Help Overlay
 [bold]q[/] - Quit Safely
 
@@ -57,6 +58,7 @@ class TermFlowApp(App):
         Binding("p", "toggle_pomodoro", "Pomodoro", show=True),
         Binding("r", "reset_pomodoro", "Reset", show=True),
         Binding("a", "add_task", "Add Task", show=True),
+        Binding("c", "show_command_palette", "Commands", show=True),
     ]
 
     def compose(self) -> ComposeResult:
@@ -86,6 +88,66 @@ class TermFlowApp(App):
 
     def action_add_task(self) -> None:
         self.query_one(TodoPanel).focus_input()
+
+    def action_show_command_palette(self) -> None:
+        from textual.widgets import OptionList
+        from textual.containers import Container
+        from textual.screen import ModalScreen
+
+        class CommandPalette(ModalScreen):
+            def compose(self) -> ComposeResult:
+                with Container(id="command-palette-container"):
+                    yield Label("[bold]TermFlow Command Palette[/]", id="palette-header")
+                    yield OptionList(
+                        "Help",
+                        "Info",
+                        id="palette-list"
+                    )
+
+            def on_option_list_option_selected(self, event: OptionList.OptionSelected) -> None:
+                self.dismiss(event.option.prompt)
+
+        def handle_choice(choice: str | None) -> None:
+            if choice == "Help":
+                self.action_toggle_help()
+            elif choice == "Info":
+                self.action_show_info()
+
+        self.push_screen(CommandPalette(), handle_choice)
+
+    def action_show_info(self) -> None:
+        from textual.screen import ModalScreen
+        
+        INFO_TEXT = """
+[bold blue]Project name:[/] TermFlow
+[bold blue]Made by:[/] Axoninova community
+[bold blue]Founder:[/] Atharv
+[bold blue]Invite:[/] https://dsc.gg/axoninnova
+
+[bold underline]Description[/]
+TermFlow is a minimalist terminal productivity hub designed to keep you focused and efficient. It integrates essential tools directly into your workflow.
+
+[bold underline]Core Features[/]
+• [bold]Tasks:[/] Persistent todo management with quick entry.
+• [bold]Pomodoro:[/] Integrated focus timer with session tracking.
+• [bold]Config:[/] Easy customization via JSON configuration.
+• [bold]Keyboard-first:[/] Optimized for speed and mouse-free operation.
+
+[bold dim]Press any key to close[/]
+"""
+        class InfoScreen(ModalScreen):
+            def compose(self) -> ComposeResult:
+                with Center():
+                    with Middle():
+                        yield Static(INFO_TEXT, id="info-overlay-content")
+            
+            def on_key(self, event) -> None:
+                self.dismiss()
+            
+            def on_click(self, event) -> None:
+                self.dismiss()
+
+        self.push_screen(InfoScreen())
 
 def main():
     app = TermFlowApp()
