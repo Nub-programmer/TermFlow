@@ -18,10 +18,19 @@ Grid {
     padding: 1;
 }
 
+#todo:focus-within {
+    border: double $primary;
+    background: $surface;
+}
+
 #clock, #pomodoro, #info {
     border: round $primary;
     padding: 1;
     content-align: center middle;
+}
+
+#pomodoro:focus-within {
+    border: double $accent;
 }
 
 #timer {
@@ -46,12 +55,17 @@ HelpScreen, InfoScreen {
     text-align: center;
 }
 
-#help-content {
-    border: double $primary;
+.flow-mode-on #clock, .flow-mode-on #info, .flow-mode-on #logo {
+    display: none;
 }
 
-#info-content {
-    border: double $accent;
+.flow-mode-on Grid {
+    grid-size: 2 1;
+    grid-rows: 1fr;
+}
+
+.flow-mode-on #todo {
+    row-span: 1;
 }
 
 #sessions-count {

@@ -1,0 +1,125 @@
+You are working on TermFlow, a focus-first terminal productivity app.
+
+GOAL
+
+Make TermFlow feel alive, intentional, and premium — without adding noise, gimmicks, or unnecessary features.
+
+TermFlow is not a dashboard.
+It is a Focus Operating System.
+
+CORE PRINCIPLES (DO NOT BREAK)
+
+Minimal, calm, distraction-free
+
+Keyboard-first (no mouse dependency)
+
+Every visual element must justify its existence
+
+No flashy animations, no clutter
+
+Monospace, fixed-width terminal constraints respected
+
+TASKS
+1️⃣ Fix TODO Interaction (CRITICAL)
+
+Ensure tasks can be:
+
+Navigated with ↑ ↓
+
+Toggled complete with Space / Enter
+
+Active task must be visually clear
+
+No clicks required
+
+If selection state is missing, implement it properly
+
+2️⃣ Make TermFlow Feel “Alive” (Subtle Only)
+
+Add rare, quiet system messages that feel human but serious:
+
+Examples:
+
+“Focus session running.”
+
+“Good pace. Keep going.”
+
+“You’ve been here a while.”
+
+Messages must:
+
+Appear infrequently
+
+Never interrupt typing
+
+Never be jokes or cringe
+
+3️⃣ Improve Quote System (IMPORTANT)
+
+Quotes must be:
+
+Diverse (science, philosophy, creators, thinkers)
+
+Non-religious-dominant
+
+Short (1–2 lines max)
+
+Prevent repeated authors
+
+No single ideology bias
+
+Quotes should feel reflective, not motivational spam
+
+4️⃣ Visual Hierarchy Refinement
+
+Clearly define:
+
+Primary panel (active work)
+
+Secondary panels (info)
+
+Active panel should:
+
+Be brighter
+
+Have stronger border emphasis
+
+Inactive panels should subtly fade
+
+5️⃣ “Flow Mode” (Signature Identity Feature)
+
+Implement a Flow Mode:
+
+Toggle with f
+
+When ON:
+
+Only TODO + Timer remain emphasized
+
+Other panels dim or collapse
+
+No layout breakage
+
+No animations — instant, clean transitions
+
+STRICT RULES
+
+DO NOT add new widgets (music, charts, weather, etc.)
+
+DO NOT overcrowd UI
+
+DO NOT change proportions unless required
+
+DO NOT turn this into a dashboard
+
+AFTER COMPLETION
+
+Provide:
+
+What was broken and why
+
+Exactly what was changed
+
+Why this reinforces TermFlow’s identity as a Focus OS
+
+TermFlow must feel quietly powerful, not flashy.
