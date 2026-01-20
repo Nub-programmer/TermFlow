@@ -47,9 +47,7 @@ Data: {DATA_DIR}
 
 [bold dim]Press ESC, Q, or H to close[/]
 """
-        with Center():
-            with Middle():
-                yield Static(help_content, id="help-content", classes="modal-panel")
+        yield Static(help_content, id="help-content", classes="modal-panel")
 
 class InfoScreen(ModalScreen):
     BINDINGS = [
@@ -73,9 +71,7 @@ TermFlow reveals itself gradually.
 
 [bold dim]Press ESC, Q, or I to close[/]
 """
-        with Center():
-            with Middle():
-                yield Static(info_content, id="info-content", classes="modal-panel")
+        yield Static(info_content, id="info-content", classes="modal-panel")
 
 class TermFlowApp(App):
     CSS_PATH = "styles.tcss"
@@ -126,7 +122,10 @@ class TermFlowApp(App):
             pass
 
     def on_key(self, event) -> None:
-        # Global key handler to ensure these always work regardless of focus
+        # Avoid intercepting keys if a modal is already active
+        if isinstance(self.screen, ModalScreen):
+            return
+            
         if event.key == "i":
             event.stop()
             self.action_toggle_info()

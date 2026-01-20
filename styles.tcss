@@ -30,10 +30,15 @@ Grid {
     color: $warning;
 }
 
+HelpScreen, InfoScreen {
+    align: center middle;
+    background: rgba(0, 0, 0, 0.5);
+}
+
 .modal-panel {
-    width: 50;
+    width: 60;
     height: auto;
-    max-height: 25;
+    max-height: 30;
     background: $surface;
     border: double $primary;
     padding: 1 2;
