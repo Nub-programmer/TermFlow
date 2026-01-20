@@ -20,28 +20,28 @@ ASCII_LOGO = """
    | |  __/ |  | | | | | | |    | | (_) \ V  V /  
    \_/\___|_|  |_| |_| |_|_|    |_|\___/ \_/\_/   
  [/]
- [italic blue]Your minimalist terminal productivity hub[/]
+ [italic blue]TermFlow[/]
 """
 
 class HelpScreen(ModalScreen):
     BINDINGS = [
-        Binding("escape", "dismiss", "Close"),
-        Binding("q", "dismiss", "Close"),
-        Binding("h", "dismiss", "Close"),
+        Binding("escape", "dismiss", "Orientation"),
+        Binding("q", "dismiss", "Orientation"),
+        Binding("h", "dismiss", "Orientation"),
     ]
     
     def compose(self) -> ComposeResult:
         help_content = f"""
-[bold underline]Keyboard Shortcuts[/]
+[bold underline]Orientation[/]
 
 [bold]A[/] - Add Task
 [bold]D[/] - Delete Task
 [bold]Space[/] - Toggle Task
-[bold]P[/] - Pomodoro Start/Pause
-[bold]R[/] - Pomodoro Reset
-[bold]I[/] - Info Panel
-[bold]F[/] - Flow Mode Toggle
-[bold]H / ?[/] - Help Overlay
+[bold]P[/] - Start Flow
+[bold]R[/] - Reset Flow
+[bold]I[/] - Context
+[bold]F[/] - Enter Flow
+[bold]H / ?[/] - Orientation
 [bold]Q[/] - Quit
 
 [bold underline]Paths[/]
@@ -54,20 +54,20 @@ Data: {DATA_DIR}
 
 class InfoScreen(ModalScreen):
     BINDINGS = [
-        Binding("escape", "dismiss", "Close"),
-        Binding("q", "dismiss", "Close"),
-        Binding("i", "dismiss", "Close"),
+        Binding("escape", "dismiss", "Context"),
+        Binding("q", "dismiss", "Context"),
+        Binding("i", "dismiss", "Context"),
     ]
     
     def compose(self) -> ComposeResult:
         info_content = """
 [bold]TermFlow[/]
-Minimalist terminal focus environment.
+Minimalist focus engine.
 Designed to reduce cognitive load.
 
 [bold]Credits[/]
-Creator: Nub-programmer / Atharv
-Community: https://dsc.gg/axoninnova
+Nub-programmer / Atharv
+https://dsc.gg/axoninnova
 
 Explore the interface. 
 TermFlow reveals itself gradually.
@@ -80,16 +80,16 @@ class TermFlowApp(App):
     CSS_PATH = "styles.tcss"
     BINDINGS = [
         Binding("q", "quit", "Quit", show=True),
-        Binding("h", "toggle_help", "Help", show=True),
-        Binding("question_mark", "toggle_help", "Help", show=False),
-        Binding("i", "toggle_info", "Info", show=True),
-        Binding("p", "toggle_pomodoro", "Pomodoro", show=True),
-        Binding("r", "reset_pomodoro", "Reset", show=True),
+        Binding("h", "toggle_help", "Orientation", show=True),
+        Binding("question_mark", "toggle_help", "Orientation", show=False),
+        Binding("i", "toggle_info", "Context", show=True),
+        Binding("p", "toggle_pomodoro", "Start Flow", show=True),
+        Binding("r", "reset_pomodoro", "Reset Flow", show=True),
         Binding("a", "add_task", "Add Task", show=True),
-        Binding("f", "toggle_flow", "Flow Mode", show=True),
+        Binding("f", "toggle_flow", "Enter Flow", show=True),
     ]
 
-    flow_mode = reactive(False)
+    flow_state = reactive("IDLE") # IDLE, FOCUS, DEEP, COOLDOWN
 
     def compose(self) -> ComposeResult:
         yield Header(show_clock=True)
@@ -103,15 +103,25 @@ class TermFlowApp(App):
             )
         yield Footer()
 
-    def watch_flow_mode(self, flow_mode: bool) -> None:
-        self.set_class(flow_mode, "flow-mode-on")
-        if flow_mode:
-            self.notify("Flow Mode: Active")
-        else:
-            self.notify("Flow Mode: Deactivated")
+    def watch_flow_state(self, state: str) -> None:
+        self.remove_class("state-idle")
+        self.remove_class("state-focus")
+        self.remove_class("state-deep")
+        self.remove_class("state-cooldown")
+        self.add_class(f"state-{state.lower()}")
+        
+        if state == "FOCUS":
+            self.notify("Focus session running.")
+        elif state == "DEEP":
+            self.notify("Entering Deep Focus.")
+        elif state == "COOLDOWN":
+            self.notify("Cooldown initiated.")
 
     def action_toggle_flow(self) -> None:
-        self.flow_mode = not self.flow_mode
+        if self.flow_state == "IDLE":
+            self.flow_state = "DEEP"
+        else:
+            self.flow_state = "IDLE"
 
     def action_toggle_help(self) -> None:
         self.push_screen(HelpScreen())
@@ -122,14 +132,17 @@ class TermFlowApp(App):
     def action_toggle_pomodoro(self) -> None:
         try:
             self.query_one(PomodoroPanel).handle_toggle()
-            if random.random() < 0.2:
-                self.notify("Focus session running.")
+            if self.flow_state == "IDLE":
+                self.flow_state = "FOCUS"
+            elif self.flow_state == "FOCUS":
+                self.flow_state = "IDLE"
         except:
             pass
 
     def action_reset_pomodoro(self) -> None:
         try:
             self.query_one(PomodoroPanel).handle_reset()
+            self.flow_state = "IDLE"
         except:
             pass
 
@@ -142,6 +155,7 @@ class TermFlowApp(App):
 
     def on_mount(self) -> None:
         self.set_interval(300, self.quiet_message)
+        self.add_class("state-idle")
 
     def quiet_message(self) -> None:
         messages = ["Good pace. Keep going.", "You've been here a while.", "Focus is power."]
