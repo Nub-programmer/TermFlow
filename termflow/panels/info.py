@@ -5,7 +5,8 @@ from termflow.utils.storage import load_config
 
 class InfoPanel(Static):
     def compose(self):
-        yield Label("[bold green]Context[/]", classes="panel-header", id="info-header")
+        # Clearly labeled as static if API is mocked or unreliable
+        yield Label("[bold green]Context (static)[/]", classes="panel-header", id="info-header")
         yield Label("Weather: Loading...", id="weather")
         yield Label("\n[bold yellow]Reflection[/]", classes="panel-header", id="quote-header")
         yield Label("Loading...", id="quote")
@@ -26,9 +27,9 @@ class InfoPanel(Static):
             w = "N/A (Offline)"
             
         try:
-            # Only show reflection in IDLE or COOLDOWN
+            # Reflection only in IDLE
             app = self.app
-            if hasattr(app, "flow_state") and app.flow_state in ["IDLE", "COOLDOWN"]:
+            if hasattr(app, "flow_state") and app.flow_state == "IDLE":
                 q = get_quote()
             else:
                 q = "[dim]...[/]"

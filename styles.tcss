@@ -24,7 +24,7 @@ Grid {
     row-span: 3;
     border: double $accent;
     padding: 2;
-    opacity: 0.6;
+    opacity: 0.4;
 }
 
 #todo:focus-within {
@@ -38,7 +38,7 @@ Grid {
     padding: 2;
     content-align: center middle;
     height: 12;
-    opacity: 0.6;
+    opacity: 0.4;
 }
 
 #pomodoro:focus-within {
@@ -46,19 +46,22 @@ Grid {
     opacity: 1.0;
 }
 
-/* Visual Dominance */
+/* Visual Dominance & States */
 .state-idle #logo { opacity: 1.0; }
-.state-focus #pomodoro { opacity: 1.0; border: double $accent; }
-.state-deep #todo, .state-deep #pomodoro { opacity: 1.0; }
-.state-deep #clock, .state-deep #info, .state-deep #logo { display: none; }
-.state-deep Grid { grid-size: 2 1; grid-rows: 1fr; min-height: 20; }
-.state-deep #todo { row-span: 1; }
+.state-flow #pomodoro { opacity: 1.0; border: double $accent; }
+.state-deep #todo { opacity: 1.0; border: double $primary; }
 
-/* State Colors */
-.state-idle { color: $text; }
-.state-focus { color: $primary; }
-.state-deep { color: $accent; }
-.state-cooldown { color: $success; }
+.state-deep #clock, .state-deep #info, .state-deep #logo { 
+    display: none; 
+}
+.state-deep Grid { 
+    grid-size: 2 1; 
+    grid-rows: 1fr; 
+    min-height: 20; 
+}
+.state-deep #todo { 
+    row-span: 1; 
+}
 
 #timer {
     text-style: bold;
@@ -82,31 +85,14 @@ HelpScreen, InfoScreen {
     text-align: center;
 }
 
-#help-content {
-    border: double $primary;
-}
-
-#info-content {
-    border: double $accent;
-}
-
-#sessions-count {
-    color: $text-muted;
-    margin-bottom: 1;
-}
-
-.button-row {
-    height: auto;
-    align: center middle;
-    margin-top: 1;
-}
-
-.button-row Button {
-    margin: 0 1;
-}
-
 .panel-header {
     text-style: bold;
     margin-bottom: 2;
     opacity: 0.7;
+}
+
+Footer {
+    background: $surface;
+    color: $text;
+    text-style: dim;
 }

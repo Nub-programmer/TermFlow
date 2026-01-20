@@ -9,6 +9,7 @@ class ClockPanel(Static):
         self.update(self.render_content())
 
     def render_content(self):
+        # Local system timezone by default with datetime.now()
         now = datetime.now()
         return f"[bold cyan]{now.strftime('%H:%M:%S')}[/]\n[dim]{now.strftime('%Y-%m-%d')}[/]"
 

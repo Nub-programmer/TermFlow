@@ -20,7 +20,7 @@ ASCII_LOGO = """
    | |  __/ |  | | | | | | |    | | (_) \ V  V /  
    \_/\___|_|  |_| |_| |_|_|    |_|\___/ \_/\_/   
  [/]
- [italic blue]TermFlow[/]
+ [dim]your minimalist terminal productivity hub[/]
 """
 
 class HelpScreen(ModalScreen):
@@ -80,16 +80,13 @@ class TermFlowApp(App):
     CSS_PATH = "styles.tcss"
     BINDINGS = [
         Binding("q", "quit", "Quit", show=True),
-        Binding("h", "toggle_help", "Orientation", show=True),
-        Binding("question_mark", "toggle_help", "Orientation", show=False),
-        Binding("i", "toggle_info", "Context", show=True),
-        Binding("p", "toggle_pomodoro", "Start Flow", show=True),
-        Binding("r", "reset_pomodoro", "Reset Flow", show=True),
-        Binding("a", "add_task", "Add Task", show=True),
-        Binding("f", "toggle_flow", "Enter Flow", show=True),
+        Binding("h", "toggle_help", "orientation", show=True),
+        Binding("i", "toggle_info", "context", show=True),
+        Binding("p", "toggle_pomodoro", "start flow", show=True),
+        Binding("f", "toggle_flow", "enter flow", show=True),
     ]
 
-    flow_state = reactive("IDLE") # IDLE, FOCUS, DEEP, COOLDOWN
+    flow_state = reactive("IDLE") # IDLE, FLOW, DEEP
 
     def compose(self) -> ComposeResult:
         yield Header(show_clock=True)
@@ -105,18 +102,10 @@ class TermFlowApp(App):
 
     def watch_flow_state(self, state: str) -> None:
         self.remove_class("state-idle")
-        self.remove_class("state-focus")
+        self.remove_class("state-flow")
         self.remove_class("state-deep")
-        self.remove_class("state-cooldown")
         self.add_class(f"state-{state.lower()}")
         
-        if state == "FOCUS":
-            self.notify("Focus session running.")
-        elif state == "DEEP":
-            self.notify("Entering Deep Focus.")
-        elif state == "COOLDOWN":
-            self.notify("Cooldown initiated.")
-
     def action_toggle_flow(self) -> None:
         if self.flow_state == "IDLE":
             self.flow_state = "DEEP"
@@ -133,8 +122,8 @@ class TermFlowApp(App):
         try:
             self.query_one(PomodoroPanel).handle_toggle()
             if self.flow_state == "IDLE":
-                self.flow_state = "FOCUS"
-            elif self.flow_state == "FOCUS":
+                self.flow_state = "FLOW"
+            elif self.flow_state == "FLOW":
                 self.flow_state = "IDLE"
         except:
             pass
@@ -154,13 +143,7 @@ class TermFlowApp(App):
             pass
 
     def on_mount(self) -> None:
-        self.set_interval(300, self.quiet_message)
         self.add_class("state-idle")
-
-    def quiet_message(self) -> None:
-        messages = ["Good pace. Keep going.", "You've been here a while.", "Focus is power."]
-        if random.random() < 0.05:
-            self.notify(random.choice(messages))
 
 def main():
     app = TermFlowApp()
