@@ -1,0 +1,96 @@
+Context:
+You are working on a terminal-based productivity app called TermFlow.
+TermFlow follows a minimalist, keyboard-first, distraction-free philosophy.
+The UI must feel calm, intentional, and premium, not cluttered.
+
+CURRENT ISSUES TO FIX (HIGH PRIORITY)
+
+1. TODO LIST INTERACTION BUG
+
+Clicking or pressing Enter/Space on a todo item does not toggle completion
+
+Selection highlight moves correctly, but state never updates
+
+Fix input handling so:
+
+Enter or Space toggles completion
+
+Completed items visually update (checkbox + dimmed text)
+
+State persists correctly in memory/file
+
+2. QUOTE ROTATION PROBLEM
+
+Quotes are unintentionally biased (mostly religious / single-source quotes)
+
+Fix by:
+
+Ensuring diverse sources (tech, philosophy, productivity, science)
+
+Preventing repeated authors in short intervals
+
+Keeping quotes short (1–2 lines max)
+
+UI / UX IMPROVEMENTS (NO FEATURE BLOAT)
+
+Improve visual hierarchy without changing layout proportions
+
+Reduce visual noise while keeping panels readable
+
+Improve spacing consistency across panels
+
+Make the app feel more “alive” without animations
+
+INFO PANEL REQUIREMENTS
+
+Add an INFO panel that is accessible via:
+
+Pressing i or clicking the INFO panel
+
+INFO panel content should include:
+
+Short description of TermFlow (1 line)
+
+Creator credit (subtle, non-distracting)
+
+Community / server invite (optional, low emphasis)
+
+Keyboard hint: “Press h for help”
+
+Content rules:
+
+No paragraph longer than 2 lines
+
+Scroll if content exceeds panel height
+
+Must not overflow or overlap other panels
+
+HELP PANEL RULES
+
+Must render strictly inside its allocated panel
+
+Text must wrap correctly in terminal width
+
+No overflow, no overlap
+
+Scrollable if content exceeds height
+
+Commands must be short and actionable
+
+CONSTRAINTS
+
+DO NOT add new features unless required for consistency
+
+DO NOT change layout proportions unless necessary
+
+Respect terminal constraints (monospace, fixed width)
+
+Use existing colors, borders, and spacing
+
+AFTER COMPLETION
+
+Briefly explain what caused the todo bug
+
+List exactly what was changed
+
+Confirm alignment with TermFlow’s philosophy
