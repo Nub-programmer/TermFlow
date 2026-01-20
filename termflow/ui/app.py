@@ -85,6 +85,7 @@ class TermFlowApp(App):
         Binding("p", "toggle_pomodoro", "start flow", show=True),
         Binding("f", "toggle_flow", "enter flow", show=True),
         Binding("c", "toggle_palette", "command palette", show=True),
+        Binding("a", "add_task", "add task", show=False),
     ]
 
     flow_state = reactive("IDLE") # IDLE, FLOW, DEEP
@@ -151,30 +152,8 @@ class TermFlowApp(App):
             except:
                 pass
 
-    def on_key(self, event) -> None:
-        if isinstance(self.screen, ModalScreen):
-            return
-
-        key = event.key
-        if key == "i":
-            self.action_toggle_info()
-            event.stop()
-        elif key == "h" or key == "?":
-            self.action_toggle_help()
-            event.stop()
-        elif key == "f":
-            self.action_toggle_flow()
-            event.stop()
-        elif key == "escape":
-            if self.flow_state != "IDLE":
-                self.flow_state = "IDLE"
-                event.stop()
-        elif key == "c":
-            self.action_toggle_palette()
-            event.stop()
-        elif key == "p":
-            self.action_toggle_pomodoro()
-            event.stop()
+    def action_exit_flow(self) -> None:
+        self.flow_state = "IDLE"
 
 def main():
     app = TermFlowApp()
