@@ -96,3 +96,12 @@ Footer {
     color: $text;
     text-style: dim;
 }
+
+.completed {
+    color: $text-disabled;
+    text-style: strike;
+}
+
+Static:focus {
+    border: double $accent;
+}

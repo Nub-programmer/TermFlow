@@ -4,8 +4,8 @@ import re
 
 class TodoPanel(Static):
     def compose(self):
-        yield Label("[bold underline]TODO LIST[/]")
-        yield Input(placeholder="New task... (use [tag] for colors)", id="todo-input")
+        yield Label("[bold green]Orientation[/]", classes="panel-header")
+        yield Input(placeholder="Add intention...", id="todo-input")
         yield ListView(id="todo-list")
 
     def on_mount(self):
@@ -21,7 +21,6 @@ class TodoPanel(Static):
         text = re.sub(r'\[life\]', '[bold yellow][life][/]', text, flags=re.IGNORECASE)
         
         if done:
-            # Dimmed text for completed items
             return f"[dim]{text}[/]"
         return text
 
@@ -29,9 +28,13 @@ class TodoPanel(Static):
         lv = self.query_one(ListView)
         lv.clear()
         for t in load_todos():
-            icon = "✅" if t['done'] else "⬜"
-            formatted_text = self.format_todo_text(t['text'], t['done'])
-            lv.append(ListItem(Label(f"{icon} {formatted_text}")))
+            is_done = t.get('done') or t.get('completed', False)
+            icon = "✅" if is_done else "⬜"
+            formatted_text = self.format_todo_text(t['text'], is_done)
+            item = ListItem(Label(f"{icon} {formatted_text}"))
+            if is_done:
+                item.add_class("completed")
+            lv.append(item)
 
     def on_input_submitted(self, event):
         if event.value.strip():
@@ -42,26 +45,24 @@ class TodoPanel(Static):
             self.refresh_list()
 
     def on_list_view_selected(self, event: ListView.Selected):
-        # Toggles completion on Enter or Click
         todos = load_todos()
         idx = self.query_one(ListView).index
         if idx is not None and 0 <= idx < len(todos):
-            todos[idx]['done'] = not todos[idx]['done']
+            todos[idx]['done'] = not todos[idx].get('done', False)
             save_todos(todos)
             self.refresh_list()
 
     def on_key(self, event):
         if event.key == "space":
-            # Toggles completion on Space
             todos = load_todos()
             lv = self.query_one(ListView)
             idx = lv.index
             if idx is not None and 0 <= idx < len(todos):
-                todos[idx]['done'] = not todos[idx]['done']
+                todos[idx]['done'] = not todos[idx].get('done', False)
                 save_todos(todos)
                 self.refresh_list()
+                event.stop()
         elif event.key == "d":
-            # Delete task
             todos = load_todos()
             lv = self.query_one(ListView)
             idx = lv.index
@@ -69,3 +70,4 @@ class TodoPanel(Static):
                 todos.pop(idx)
                 save_todos(todos)
                 self.refresh_list()
+                event.stop()

@@ -1,6 +1,6 @@
 from textual.app import App, ComposeResult
 from textual.widgets import Header, Footer, Static
-from textual.containers import Grid, Center, Middle, VerticalScroll
+from textual.containers import Grid, VerticalScroll
 from textual.binding import Binding
 from textual.screen import ModalScreen
 from textual.reactive import reactive
@@ -8,8 +8,7 @@ from termflow.panels.clock import ClockPanel
 from termflow.panels.todo import TodoPanel
 from termflow.panels.pomodoro import PomodoroPanel
 from termflow.panels.info import InfoPanel
-from termflow.utils.storage import load_config, DATA_DIR, CONFIG_FILE
-import random
+from termflow.utils.storage import CONFIG_FILE, DATA_DIR
 
 ASCII_LOGO = """
  [bold blue]
@@ -111,6 +110,10 @@ class TermFlowApp(App):
     def action_toggle_flow(self) -> None:
         if self.flow_state == "IDLE":
             self.flow_state = "DEEP"
+            try:
+                self.query_one(PomodoroPanel).handle_toggle()
+            except:
+                pass
         else:
             self.flow_state = "IDLE"
 
@@ -141,25 +144,37 @@ class TermFlowApp(App):
             pass
 
     def action_add_task(self) -> None:
-        try:
-            todo = self.query_one(TodoPanel)
-            todo.focus_input()
-        except:
-            pass
+        if self.flow_state == "IDLE":
+            try:
+                todo = self.query_one(TodoPanel)
+                todo.focus_input()
+            except:
+                pass
 
     def on_key(self, event) -> None:
         if isinstance(self.screen, ModalScreen):
             return
-            
-        if event.key == "i":
-            event.stop()
+
+        key = event.key
+        if key == "i":
             self.action_toggle_info()
-        elif event.key == "h" or event.key == "?":
             event.stop()
+        elif key == "h" or key == "?":
             self.action_toggle_help()
-        elif event.key == "c":
             event.stop()
+        elif key == "f":
+            self.action_toggle_flow()
+            event.stop()
+        elif key == "escape":
+            if self.flow_state != "IDLE":
+                self.flow_state = "IDLE"
+                event.stop()
+        elif key == "c":
             self.action_toggle_palette()
+            event.stop()
+        elif key == "p":
+            self.action_toggle_pomodoro()
+            event.stop()
 
 def main():
     app = TermFlowApp()

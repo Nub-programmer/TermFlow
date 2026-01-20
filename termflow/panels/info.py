@@ -25,10 +25,8 @@ class InfoPanel(Static):
             
         try:
             app = self.app
-            if hasattr(app, "flow_state") and app.flow_state == "IDLE":
-                q = get_quote()
-            else:
-                q = "[dim]...[/]"
+            # Reflection is the new Quote system
+            q = get_quote()
         except:
             q = "Stay productive!"
             
