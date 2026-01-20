@@ -41,6 +41,7 @@ class HelpScreen(ModalScreen):
 [bold]R[/] - Reset Flow
 [bold]I[/] - Context
 [bold]F[/] - Enter Flow
+[bold]C[/] - Command Palette
 [bold]H / ?[/] - Orientation
 [bold]Q[/] - Quit
 
@@ -84,6 +85,7 @@ class TermFlowApp(App):
         Binding("i", "toggle_info", "context", show=True),
         Binding("p", "toggle_pomodoro", "start flow", show=True),
         Binding("f", "toggle_flow", "enter flow", show=True),
+        Binding("c", "toggle_palette", "command palette", show=True),
     ]
 
     flow_state = reactive("IDLE") # IDLE, FLOW, DEEP
@@ -118,6 +120,9 @@ class TermFlowApp(App):
     def action_toggle_info(self) -> None:
         self.push_screen(InfoScreen())
 
+    def action_toggle_palette(self) -> None:
+        self.push_screen(HelpScreen())
+
     def action_toggle_pomodoro(self) -> None:
         try:
             self.query_one(PomodoroPanel).handle_toggle()
@@ -142,8 +147,19 @@ class TermFlowApp(App):
         except:
             pass
 
-    def on_mount(self) -> None:
-        self.add_class("state-idle")
+    def on_key(self, event) -> None:
+        if isinstance(self.screen, ModalScreen):
+            return
+            
+        if event.key == "i":
+            event.stop()
+            self.action_toggle_info()
+        elif event.key == "h" or event.key == "?":
+            event.stop()
+            self.action_toggle_help()
+        elif event.key == "c":
+            event.stop()
+            self.action_toggle_palette()
 
 def main():
     app = TermFlowApp()
