@@ -1,9 +1,16 @@
+#main-scroll {
+    height: 1fr;
+    scrollbar-gutter: stable;
+}
+
 Grid {
     grid-size: 2 3;
     grid-columns: 1fr 1fr;
     grid-rows: 1fr 1fr 1fr;
     grid-gutter: 1;
     padding: 1;
+    height: auto;
+    min-height: 40;
 }
 
 #logo {
@@ -27,6 +34,7 @@ Grid {
     border: round $primary;
     padding: 1;
     content-align: center middle;
+    height: 12;
 }
 
 #pomodoro:focus-within {
@@ -62,6 +70,7 @@ HelpScreen, InfoScreen {
 .flow-mode-on Grid {
     grid-size: 2 1;
     grid-rows: 1fr;
+    min-height: 20;
 }
 
 .flow-mode-on #todo {

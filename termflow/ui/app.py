@@ -1,6 +1,6 @@
 from textual.app import App, ComposeResult
 from textual.widgets import Header, Footer, Static
-from textual.containers import Grid, Center, Middle
+from textual.containers import Grid, Center, Middle, VerticalScroll
 from textual.binding import Binding
 from textual.screen import ModalScreen
 from textual.reactive import reactive
@@ -93,13 +93,14 @@ class TermFlowApp(App):
 
     def compose(self) -> ComposeResult:
         yield Header(show_clock=True)
-        yield Static(ASCII_LOGO, id="logo")
-        yield Grid(
-            TodoPanel(id="todo"),
-            ClockPanel(id="clock"),
-            PomodoroPanel(id="pomodoro"),
-            InfoPanel(id="info"),
-        )
+        with VerticalScroll(id="main-scroll"):
+            yield Static(ASCII_LOGO, id="logo")
+            yield Grid(
+                TodoPanel(id="todo"),
+                ClockPanel(id="clock"),
+                PomodoroPanel(id="pomodoro"),
+                InfoPanel(id="info"),
+            )
         yield Footer()
 
     def watch_flow_mode(self, flow_mode: bool) -> None:
