@@ -15,8 +15,10 @@ class TodoItem(ListItem):
 
     def compose(self) -> ComposeResult:
         icon = "✅" if self.completed else "⬜"
-        style = "strike" if self.completed else ""
-        yield Label(f"{icon} {self.todo_text}", classes=style)
+        if self.completed:
+            yield Label(f"[dim strike]{icon} {self.todo_text}[/]")
+        else:
+            yield Label(f"[bold]{icon} {self.todo_text}[/]")
 
 class TodoPanel(Static):
     """A panel to manage To-Do items."""

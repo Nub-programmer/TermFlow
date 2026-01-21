@@ -1,0 +1,174 @@
+You are working on a serious, production-grade, terminal-first productivity system called TermFlow.
+
+This is NOT a toy todo app.
+This is NOT a flashy dashboard.
+This is a calm, intentional, mindset-driven tool designed for deep work.
+
+====================================
+CORE PHILOSOPHY (DO NOT VIOLATE)
+====================================
+- Terminal-native
+- Keyboard-first
+- Flow-state oriented (not task dumping)
+- Minimal UI, maximum clarity
+- No clutter, no gimmicks
+- Everything must feel intentional
+
+====================================
+CRITICAL FIXES (DO FIRST)
+====================================
+
+1. TIME & LOCALE (NO APIs)
+- Time MUST use the user's local system timezone.
+- Do NOT hardcode timezones.
+- Use Python’s built-in datetime / localtime / zoneinfo only.
+- Time must update live and always match the system clock.
+
+2. BRAND IDENTITY (MUST STAY)
+- Restore and permanently keep the tagline under the ASCII logo:
+  "your minimalist terminal productivity hub"
+- It must never disappear on resize.
+- Center-aligned with the logo.
+- Safe text wrapping.
+
+3. TODO INTERACTION BUG
+- Space OR Enter toggles task completion.
+- Selected task must look different from completed tasks.
+- No mouse dependency.
+- Persist todos safely to todos.json.
+- Handle corrupted or missing data gracefully.
+
+4. REFLECTION SYSTEM (IMPORTANT)
+- REMOVE biased or religious quote sources.
+- Replace with a curated, neutral dataset:
+  - philosophy
+  - science
+  - builders
+  - artists
+  - anonymous reflections
+- Rotate categories evenly.
+- Rename section from "Quote" to "Reflection".
+- Reflections must be calm, short, and non-preachy.
+
+====================================
+THE CORE DIFFERENTIATOR: FLOW MODE
+====================================
+
+FLOW MODE is the emotional core of TermFlow.
+
+When Flow Mode is active:
+- The user does NOT manage individual tasks.
+- The user enters ONE intention for the session (e.g., "Study physics").
+- All non-essential UI disappears.
+
+ONLY these remain visible:
+1. Current intention
+2. Timer
+3. One contextual reflection
+
+FLOW MODE BEHAVIOR:
+- Pomodoro auto-starts when Flow Mode begins.
+- Todos become read-only.
+- Notifications, weather, extra panels disappear completely.
+- Screen visually dims except the active panel.
+- ESC exits Flow Mode and restores the dashboard.
+
+KEYBINDINGS:
+- f → enter Flow Mode
+- esc → exit Flow Mode
+- p → pause / resume timer
+- t → quick-add todo (only outside Flow Mode)
+- h or ? → Help screen
+- i → Info screen
+
+Flow Mode must feel calm, intentional, and unlike any other terminal app.
+
+====================================
+HELP & INFO SCREENS (FIX PROPERLY)
+====================================
+
+HELP SCREEN:
+- Open via h or ?
+- Render ONLY inside its allocated panel.
+- Proper text wrapping.
+- Scroll if content exceeds height.
+- Concise, actionable lines (no long paragraphs).
+
+INFO SCREEN:
+- Accessible via command palette or keybinding (i).
+- Display:
+  - Project: TermFlow
+  - Made by: Axoninova community
+  - Founder: Atharv
+  - Invite: https://dsc.gg/axoninnova
+  - Short explanation of features & usage
+- Keep tone professional and minimal.
+
+====================================
+UI POLISH (NO REDESIGN)
+====================================
+- Keep existing layout proportions.
+- Improve spacing consistency.
+- Reduce border noise.
+- Highlight ONLY the active panel.
+- Use color hierarchy:
+  - Cyan → time
+  - Green → actions
+  - Yellow → context
+  - Dim gray → background text
+- No flashy effects.
+
+====================================
+PROJECT STRUCTURE (SAFE FOR REPLIT)
+====================================
+
+Final deployable structure MUST be:
+
+termflow/
+├── termflow/
+│   ├── __init__.py
+│   ├── main.py
+│   ├── ui/
+│   ├── core/
+│   ├── data/
+│   │   ├── todos.json
+│   │   └── reflections.json
+├── pyproject.toml
+├── README.md
+└── LICENSE
+
+REMOVE from production:
+- attached_assets/
+- .upm/
+- .pythonlibs/
+- replit.md
+- unused styles
+- termflow.egg-info/
+
+⚠️ Keep Replit compatibility.
+⚠️ Do NOT break the run command.
+⚠️ Modularize safely.
+
+====================================
+PIP DEPLOYMENT
+====================================
+- Configure pyproject.toml correctly.
+- Expose CLI command: `termflow`
+- Entry point runs the app.
+- User-space install only (no sudo).
+- Must work after:
+  pip install .
+  termflow
+
+====================================
+FINAL VERIFICATION
+====================================
+- TermFlow must feel like a mindset tool, not a todo list.
+- Flow Mode must be the soul of the app.
+- No distractions.
+- No gimmicks.
+
+After implementation:
+- Briefly explain what was fixed.
+- Explain Flow Mode in exactly 3 bullet points.
+- Confirm pip readiness.
