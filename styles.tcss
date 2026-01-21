@@ -54,8 +54,10 @@ Grid {
 #focus-buddy {
     text-align: center;
     margin-top: 1;
-    color: $success;
-    opacity: 0.8;
+    color: $yellow;
+    opacity: 1.0;
+    height: 2;
+    width: 100%;
 }
 
 .state-deep {

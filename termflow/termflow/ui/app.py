@@ -88,6 +88,16 @@ class TermFlowApp(App):
         config = load_config()
         config["buddy_enabled"] = self.buddy_enabled
         save_config(config)
+        self.notify(f"Buddy: {'ON' if self.buddy_enabled else 'OFF'}")
+        
+        # Immediate UI update for Flow Mode
+        if self.flow_state == "DEEP":
+            buddy_widget = self.query_one("#focus-buddy")
+            if self.buddy_enabled:
+                buddy_widget.remove_class("hidden")
+                self.watch_buddy_state(self.buddy_state)
+            else:
+                buddy_widget.add_class("hidden")
 
     def compose(self) -> ComposeResult:
         header = Header()
@@ -102,9 +112,10 @@ class TermFlowApp(App):
                 InfoPanel(id="info"),
                 id="dashboard-grid"
             )
-            yield Static("", id="flow-intention", classes="hidden")
+            yield Static("[bold cyan]Intention:[/] ", id="flow-intention", classes="hidden")
             yield Static("", id="focus-buddy", classes="hidden")
         yield Footer()
+
     def watch_flow_state(self, state: str) -> None:
         self.set_class(state == "DEEP", "state-deep")
         dashboard = self.query_one("#dashboard-grid")
@@ -119,7 +130,10 @@ class TermFlowApp(App):
             if self.buddy_enabled:
                 buddy_widget.remove_class("hidden")
                 self.buddy_state = "IDLE"
+                self.watch_buddy_state("IDLE")
                 self.set_timer(10, lambda: setattr(self, "buddy_state", "FOCUS"))
+            else:
+                buddy_widget.add_class("hidden")
             
             self.query_one("#pomodoro").remove_class("hidden")
             self.query_one("#clock").remove_class("hidden")
