@@ -79,9 +79,15 @@ class TermFlowApp(App):
         from textual.command import CommandPalette
         self.push_screen(CommandPalette())
 
+    def action_add_intention(self) -> None:
+        if self.flow_state == "IDLE":
+            # Simple simulation of adding intention
+            self.intention = "Focus" 
+            self.action_enter_flow()
+
     def compose(self) -> ComposeResult:
         header = Header()
-        header.show_clock = True
+        header.show_clock = False
         yield header
         with VerticalScroll(id="main-scroll"):
             yield Static(ASCII_LOGO, id="logo")
@@ -135,8 +141,9 @@ class TermFlowApp(App):
 
     def action_enter_flow(self) -> None:
         if self.flow_state == "IDLE":
-            # Simple prompt for intention (simplified for now)
-            self.intention = "Focus Session" 
+            # In a real app we'd prompt, but here we just enter
+            if not self.intention:
+                self.intention = "Deep Work"
             self.flow_state = "DEEP"
             try:
                 self.query_one(PomodoroPanel).handle_toggle()

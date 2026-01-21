@@ -1,0 +1,183 @@
+You are working on a serious, production-grade, terminal-first productivity system called **TermFlow**.
+
+This is NOT a toy todo app.
+This is NOT a flashy dashboard.
+This is a calm, intentional, mindset-driven tool designed for deep work.
+
+====================================
+CORE PHILOSOPHY (DO NOT VIOLATE)
+====================================
+- Terminal-native
+- Keyboard-first
+- Flow-state oriented (not task dumping)
+- Minimal UI, maximum clarity
+- No clutter, no gimmicks
+- Everything must feel intentional
+
+====================================
+CRITICAL FIXES (DO FIRST)
+====================================
+
+1. TIME & LOCALE (NO APIs)
+- Time MUST use the user's local system timezone.
+- Do NOT hardcode timezones.
+- Use Python’s built-in datetime / time / zoneinfo only.
+- Time must update live and always match the system clock.
+
+2. BRAND IDENTITY (MUST STAY)
+- Restore and permanently keep the tagline under the ASCII logo:
+  "your minimalist terminal productivity hub"
+- It must never disappear on resize.
+- Center-aligned with the logo.
+- Safe text wrapping.
+
+3. TODO INTERACTION BUG
+- Space OR Enter toggles task completion.
+- Selected task must look different from completed tasks.
+- No mouse dependency.
+- Persist todos safely to todos.json.
+- Handle corrupted or missing data gracefully (never crash).
+
+4. REFLECTION SYSTEM (IMPORTANT)
+- REMOVE biased, religious, or motivational quote sources.
+- Replace with a neutral, curated dataset:
+  - philosophy
+  - science
+  - builders
+  - artists
+  - anonymous reflections
+- Rotate categories evenly.
+- Rename section from "Quote" to "Reflection".
+- Reflections must be calm, short, and non-preachy.
+
+====================================
+THE CORE DIFFERENTIATOR: FLOW MODE
+====================================
+
+FLOW MODE is the emotional core of TermFlow.
+
+When Flow Mode is active:
+- The user enters ONE intention for the session.
+- Task management becomes read-only.
+- All non-essential UI disappears.
+
+ONLY these remain visible:
+1. Current intention
+2. Timer
+3. One contextual reflection
+
+FLOW MODE BEHAVIOR:
+- Pomodoro auto-starts when Flow Mode begins.
+- Screen visually dims except the active panel.
+- No notifications, weather, or side panels.
+- ESC exits Flow Mode and restores the dashboard.
+
+KEYBINDINGS:
+- f → enter Flow Mode
+- esc → exit Flow Mode
+- p → pause / resume timer
+- t → quick-add todo (only outside Flow Mode)
+- h or ? → Help screen
+- i → Info screen
+
+Flow Mode must feel calm, intentional, and emotionally distinct from the normal dashboard.
+
+====================================
+FOCUS BUDDY (OPTIONAL, PROFESSIONAL)
+====================================
+
+Implement a **Focus Buddy** ONLY if it fits naturally.
+
+Rules:
+- NOT a chatbot
+- NOT constantly talking
+- NOT motivational spam
+- NOT cute or childish
+
+Design:
+- Minimal ASCII or symbol-based presence
+- Subtle animated states (idle, focused, resting)
+- Slow, calming animation (low frame rate)
+
+Behavior:
+- Appears ONLY during Flow Mode
+- Reacts silently to:
+  - Flow start
+  - Mid-session
+  - Flow end
+- Messages must be extremely short (1–3 words max):
+  - "Begin."
+  - "Stay."
+  - "Done."
+
+The Focus Buddy must feel like a quiet presence, not an assistant.
+
+====================================
+HELP & INFO SCREENS (FIX PROPERLY)
+====================================
+
+HELP SCREEN:
+- Open via h or ?
+- Render ONLY inside its allocated panel.
+- Proper text wrapping.
+- Scroll if content exceeds height.
+- Concise, actionable lines only.
+
+INFO SCREEN:
+- Open via i.
+- Display:
+  - Project: TermFlow
+  - Made by: Axoninova community
+  - Founder: Atharv
+  - Invite: https://dsc.gg/axoninnova
+  - Short explanation of features & usage
+- Professional, minimal tone.
+
+====================================
+UI POLISH (NO REDESIGN)
+====================================
+- Keep existing layout proportions.
+- Improve spacing consistency.
+- Reduce border noise.
+- Highlight ONLY the active panel.
+- Color hierarchy:
+  - Cyan → time
+  - Green → actions
+  - Yellow → context
+  - Dim gray → background text
+- No flashy effects.
+
+====================================
+PROJECT STRUCTURE (DO NOT BREAK REPLIT)
+====================================
+
+IMPORTANT:
+- DO NOT restructure folders.
+- DO NOT move files unless absolutely necessary.
+- Keep the current Replit run command working.
+
+However:
+- Isolate core logic from UI logic where possible.
+- Avoid hardcoded paths.
+- Use safe, relative file handling.
+- Prepare code so it can later be packaged with pip.
+
+====================================
+PIP PREPARATION (NO DEPLOY YET)
+====================================
+- Add pip packaging files ONLY if they do not break Replit.
+- If unsafe, add TODO comments instead.
+- Ensure main entry logic can later be exposed as:
+  termflow
+
+====================================
+FINAL REQUIREMENTS
+====================================
+
+After implementation:
+1. Briefly explain what was fixed.
+2. Explain Flow Mode in EXACTLY 3 bullet points.
+3. State whether pip packaging is READY or PREPARED.
+
+TermFlow must feel like a mindset tool, not a todo list.
+No distractions. No gimmicks.

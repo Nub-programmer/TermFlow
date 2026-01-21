@@ -1,11 +1,19 @@
 Header Icon {
     display: block;
+    width: auto;
 }
 
 Header Icon:after {
     content: " command palette : ";
     color: $text-disabled;
     font-style: italic;
+    padding-left: 1;
+}
+
+#logo {
+    text-align: center;
+    width: 100%;
+    margin-top: 1;
 }
 #main-scroll {
 
