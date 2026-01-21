@@ -39,10 +39,15 @@ class TodoPanel(Static):
         
         todos = load_todos()
         for idx, todo in enumerate(todos):
-            # Safe access with fallback
+            # Safe access with multi-key support and graceful fallback
+            if not isinstance(todo, dict):
+                continue
+                
             text = todo.get("text", "Untitled")
-            completed = todo.get("completed", todo.get("done", False))
-            list_view.append(TodoItem(text, completed, idx))
+            # Standardize on 'done' internally while supporting 'completed'
+            done = todo.get("done", todo.get("completed", False))
+            
+            list_view.append(TodoItem(text, done, idx))
 
     def on_input_submitted(self, event: Input.Submitted) -> None:
         """Handle adding a new task."""

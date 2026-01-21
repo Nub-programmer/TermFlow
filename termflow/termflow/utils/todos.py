@@ -12,10 +12,9 @@ def load_todos() -> List[Dict]:
     try:
         with open(TODO_FILE, "r") as f:
             data = json.load(f)
-            # Handle migration from 'done' to 'completed'
-            for item in data:
-                if "done" in item and "completed" not in item:
-                    item["completed"] = item.pop("done")
+            # Ensure data is a list of dicts
+            if not isinstance(data, list):
+                return []
             return data
     except (json.JSONDecodeError, IOError):
         return []
@@ -23,15 +22,24 @@ def load_todos() -> List[Dict]:
 def save_todos(todos: List[Dict]):
     """Saves todos to the local JSON file."""
     try:
+        # Cleanup before saving to maintain consistency
+        clean_todos = []
+        for todo in todos:
+            if isinstance(todo, dict):
+                # Ensure we use 'done' as the standard key
+                done = todo.get("done", todo.get("completed", False))
+                text = todo.get("text", "Untitled")
+                clean_todos.append({"text": text, "done": done})
+        
         with open(TODO_FILE, "w") as f:
-            json.dump(todos, f, indent=2)
+            json.dump(clean_todos, f, indent=2)
     except IOError as e:
         print(f"Error saving todos: {e}")
 
 def add_todo(text: str) -> List[Dict]:
     """Adds a new todo and returns the updated list."""
     todos = load_todos()
-    todos.append({"text": text, "completed": False})
+    todos.append({"text": text, "done": False})
     save_todos(todos)
     return todos
 
@@ -39,7 +47,13 @@ def toggle_todo(index: int) -> List[Dict]:
     """Toggles the completion status of a todo."""
     todos = load_todos()
     if 0 <= index < len(todos):
-        todos[index]["completed"] = not todos[index]["completed"]
+        todo = todos[index]
+        # Support both keys during toggle
+        current_status = todo.get("done", todo.get("completed", False))
+        todo["done"] = not current_status
+        # Clean up legacy key if present
+        if "completed" in todo:
+            del todo["completed"]
         save_todos(todos)
     return todos
 
