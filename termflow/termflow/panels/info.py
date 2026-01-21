@@ -6,7 +6,7 @@ class InfoPanel(Static):
     def compose(self):
         yield Label("[bold yellow]Reflection[/]", classes="panel-header")
         yield Label("Loading...", id="reflection")
-        # Removed weather/context section as per philosophy of minimal UI in Flow
+        self.set_interval(300, self.update_info)
 
     def on_mount(self):
         self.update_info()

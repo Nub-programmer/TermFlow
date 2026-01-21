@@ -33,6 +33,14 @@ def load_config():
     except:
         return {"pomodoro_duration": 25, "pomodoro_sessions_completed": 0}
 
+def save_config(config):
+    try:
+        import tomli_w
+        with open(CONFIG_FILE, "wb") as f:
+            tomli_w.dump(config, f)
+    except:
+        pass
+
 def increment_pomodoro_session():
     config = load_config()
     sessions = config.get("pomodoro_sessions_completed", 0) + 1

@@ -1,6 +1,6 @@
 Header Icon {
     display: block;
-    width: 28;
+    width: auto;
 }
 
 Header Icon:after {
@@ -8,6 +8,11 @@ Header Icon:after {
     color: $text-disabled;
     font-style: italic;
     padding-left: 1;
+}
+
+Header Icon:hover {
+    background: $accent;
+    color: $text;
 }
 
 #logo {

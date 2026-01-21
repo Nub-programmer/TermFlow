@@ -1,0 +1,118 @@
+You previously claimed to implement a Focus Buddy, but NO ASCII character was actually rendered.
+This is a regression and must be fixed.
+
+You are now REQUIRED to visibly render a Focus Buddy exactly as described below.
+Do NOT claim completion unless the character is physically visible in the UI.
+
+====================================
+FOCUS BUDDY — NON-NEGOTIABLE
+====================================
+
+The Focus Buddy MUST:
+
+- Be a real ASCII / text-based character
+- Be visibly rendered on screen
+- Match the minimalist, terminal aesthetic shown in the provided screenshots
+- Appear ONLY during Flow Mode
+- Never behave like a chatbot
+- Never spam messages
+- Never animate fast or distractingly
+
+If it is not visible on screen, the task is NOT complete.
+
+====================================
+VISUAL DESIGN (MANDATORY)
+====================================
+
+Design a calm, neutral ASCII buddy.
+NO anime.
+NO kawaii.
+NO emojis.
+NO faces with expressions.
+
+Example style (you may refine but must stay minimal):
+
+Idle:
+   [•]
+
+Focused:
+   [■]
+
+Resting:
+   [·]
+
+OR
+
+   │
+   │
+   ●
+
+Choose ONE design and keep it consistent.
+
+- Use dim or yellow accent color
+- Render it in a dedicated, subtle area (corner or beside intention)
+- It must feel like a quiet presence, not a feature
+
+====================================
+BEHAVIOR RULES
+====================================
+
+- Appears ONLY when Flow Mode is active
+- Has exactly THREE possible messages (1–3 words max):
+  - "Begin."
+  - "Stay."
+  - "Done."
+- Messages appear briefly, then fade
+- No narration, no motivation, no tips
+
+State mapping:
+- Flow start → Idle → "Begin."
+- Mid-session → Focused → "Stay."
+- Flow end → Resting → "Done."
+
+====================================
+TOGGLE (REQUIRED)
+====================================
+
+Add a keyboard toggle:
+
+- b → toggle Focus Buddy ON/OFF
+- Default: OFF
+- Persist preference in a local config file (safe JSON)
+- Toggle works instantly without restart
+
+This ensures professionalism and user control.
+
+====================================
+FLOW MODE VERIFICATION
+====================================
+
+Ensure:
+- Buddy is NOT rendered outside Flow Mode
+- Buddy disappears immediately when ESC exits Flow Mode
+- UI remains minimal and uncluttered
+
+====================================
+NO LIES RULE
+====================================
+
+Do NOT say “implemented” unless:
+- ASCII character is visible
+- Toggle key works
+- Messages appear correctly
+- Buddy disappears outside Flow Mode
+
+If any part is missing, explain what is incomplete instead of claiming success.
+
+====================================
+AFTER IMPLEMENTATION
+====================================
+
+Respond with:
+1. ASCII sketch of the Focus Buddy used
+2. Where it renders on screen
+3. Confirmation that toggle (b) works
+4. One sentence explaining why it does NOT break Flow
+
+TermFlow is a mindset tool.
+The Focus Buddy must feel like silence, not personality.
