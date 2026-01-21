@@ -75,7 +75,9 @@ class TermFlowApp(App):
     intention = reactive("")
 
     def action_command_palette(self) -> None:
-        self.action_command_palette()
+        """Explicitly trigger the command palette."""
+        from textual.command import CommandPalette
+        self.push_screen(CommandPalette())
 
     def compose(self) -> ComposeResult:
         header = Header()

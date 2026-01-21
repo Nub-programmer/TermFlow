@@ -7,9 +7,7 @@ Header Icon:after {
     color: $text-disabled;
     font-style: italic;
 }
-    height: 1fr;
-    scrollbar-gutter: stable;
-}
+#main-scroll {
 
 Grid {
     grid-size: 2 2;
