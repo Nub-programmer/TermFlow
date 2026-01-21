@@ -68,13 +68,19 @@ class TermFlowApp(App):
         Binding("h", "toggle_help", "Help", show=True),
         Binding("i", "toggle_info", "Info", show=True),
         Binding("q", "quit", "Quit", show=True),
+        Binding("colon", "command_palette", "Command Palette", show=False),
     ]
 
     flow_state = reactive("IDLE")
     intention = reactive("")
 
+    def action_command_palette(self) -> None:
+        self.action_command_palette()
+
     def compose(self) -> ComposeResult:
-        yield Header()
+        header = Header()
+        header.show_clock = True
+        yield header
         with VerticalScroll(id="main-scroll"):
             yield Static(ASCII_LOGO, id="logo")
             yield Grid(

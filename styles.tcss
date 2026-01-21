@@ -1,4 +1,12 @@
-#main-scroll {
+Header Icon {
+    display: block;
+}
+
+Header Icon:after {
+    content: " command palette : ";
+    color: $text-disabled;
+    font-style: italic;
+}
     height: 1fr;
     scrollbar-gutter: stable;
 }
