@@ -2,7 +2,7 @@ from textual.app import ComposeResult
 from textual.widgets import Static, ListView, ListItem, Label, Input, Button
 from textual.containers import Vertical, Horizontal
 from textual.message import Message
-from termflow.utils.todos import load_todos, add_todo, toggle_todo, delete_todo
+from termflow.termflow.utils.todos import load_todos, add_todo, toggle_todo, delete_todo
 
 class TodoItem(ListItem):
     """A single todo item widget."""
@@ -39,7 +39,10 @@ class TodoPanel(Static):
         
         todos = load_todos()
         for idx, todo in enumerate(todos):
-            list_view.append(TodoItem(todo["text"], todo["completed"], idx))
+            # Safe access with fallback
+            text = todo.get("text", "Untitled")
+            completed = todo.get("completed", todo.get("done", False))
+            list_view.append(TodoItem(text, completed, idx))
 
     def on_input_submitted(self, event: Input.Submitted) -> None:
         """Handle adding a new task."""

@@ -1,7 +1,7 @@
 from textual.widgets import Static, Button, Label
 from textual.reactive import reactive
 from typing import TYPE_CHECKING, Any
-from termflow.utils.storage import load_config, increment_pomodoro_session
+from termflow.termflow.utils.storage import load_config, increment_pomodoro_session
 
 if TYPE_CHECKING:
     from textual.app import ComposeResult

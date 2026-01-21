@@ -22,4 +22,7 @@ class InfoPanel(Static):
         except:
             q = "Stay focused."
         
-        self.query_one("#reflection", Label).update(q)
+        try:
+            self.query_one("#reflection", Label).update(q)
+        except:
+            pass

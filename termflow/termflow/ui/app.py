@@ -5,7 +5,7 @@ from textual.binding import Binding
 from textual.screen import ModalScreen
 from textual.reactive import reactive
 from termflow.termflow.panels.clock import ClockPanel
-from termflow.termflow.panels.todo import TodoPanel
+from termflow.termflow.panels.todo_list import TodoPanel
 from termflow.termflow.panels.pomodoro import PomodoroPanel
 from termflow.termflow.panels.info import InfoPanel
 
@@ -104,6 +104,9 @@ class TermFlowApp(App):
             self.query_one("#clock").remove_class("hidden")
             self.query_one("#info").remove_class("hidden")
             buddy.update("✨ [italic]Begin.[/]")
+            
+            # Focus buddy subtle reaction mid-session simulation
+            self.set_timer(10, lambda: buddy.update("✨ [italic]Stay.[/]"))
         else:
             dashboard.remove_class("hidden")
             intention_display.add_class("hidden")
@@ -112,7 +115,15 @@ class TermFlowApp(App):
             self.query_one("#pomodoro").remove_class("hidden")
             self.query_one("#clock").remove_class("hidden")
             self.query_one("#info").remove_class("hidden")
-            self.query_one("#todo").remove_class("hidden")
+            try:
+                self.query_one("#todo").remove_class("hidden")
+            except:
+                pass
+            try:
+                # Refresh layout to fix any visibility issues
+                self.refresh()
+            except:
+                pass
 
     def action_enter_flow(self) -> None:
         if self.flow_state == "IDLE":

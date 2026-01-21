@@ -11,7 +11,12 @@ def load_todos() -> List[Dict]:
     
     try:
         with open(TODO_FILE, "r") as f:
-            return json.load(f)
+            data = json.load(f)
+            # Handle migration from 'done' to 'completed'
+            for item in data:
+                if "done" in item and "completed" not in item:
+                    item["completed"] = item.pop("done")
+            return data
     except (json.JSONDecodeError, IOError):
         return []
 

@@ -29,12 +29,14 @@ Grid {
     text-align: center;
     margin-top: 2;
     font-size: 150%;
+    color: $cyan;
 }
 
 #focus-buddy {
     text-align: center;
     margin-top: 1;
     color: $success;
+    opacity: 0.8;
 }
 
 .state-deep {
@@ -65,7 +67,17 @@ Grid {
     opacity: 0.8;
 }
 
+#clock { color: $cyan; }
+#info { color: $yellow; }
+#pomodoro { color: $green; }
+
 #todo:focus-within, #pomodoro:focus-within {
     border: double $accent;
     opacity: 1.0;
+}
+
+#timer {
+    color: $warning;
+    text-style: bold;
+    text-align: center;
 }

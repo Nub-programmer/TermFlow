@@ -24,4 +24,23 @@ def save_todos(todos):
         json.dump(todos, f)
 
 def load_config():
-    return {}
+    if not CONFIG_FILE.exists():
+        return {"pomodoro_duration": 25, "pomodoro_sessions_completed": 0}
+    try:
+        import tomllib
+        with open(CONFIG_FILE, "rb") as f:
+            return tomllib.load(f)
+    except:
+        return {"pomodoro_duration": 25, "pomodoro_sessions_completed": 0}
+
+def increment_pomodoro_session():
+    config = load_config()
+    sessions = config.get("pomodoro_sessions_completed", 0) + 1
+    config["pomodoro_sessions_completed"] = sessions
+    try:
+        import tomli_w
+        with open(CONFIG_FILE, "wb") as f:
+            tomli_w.dump(config, f)
+    except:
+        pass
+    return sessions
