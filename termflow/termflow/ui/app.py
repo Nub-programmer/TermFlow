@@ -27,7 +27,8 @@ class HelpScreen(ModalScreen):
         Binding("h", "dismiss", "Close"),
     ]
     def compose(self) -> ComposeResult:
-        yield Static("""
+        with VerticalScroll(classes="modal-panel"):
+            yield Static("""
 [bold underline]Orientation[/]
 [bold]T[/] - Add Intention
 [bold]D[/] - Delete
@@ -36,7 +37,7 @@ class HelpScreen(ModalScreen):
 [bold]P[/] - Pause/Resume
 [bold]I[/] - Info
 [bold]ESC[/] - Exit Flow
-        """, classes="modal-panel")
+        """)
 
 class InfoScreen(ModalScreen):
     BINDINGS = [
@@ -44,7 +45,8 @@ class InfoScreen(ModalScreen):
         Binding("i", "dismiss", "Close"),
     ]
     def compose(self) -> ComposeResult:
-        yield Static("""
+        with VerticalScroll(classes="modal-panel"):
+            yield Static("""
 [bold]TermFlow[/]
 Project: TermFlow
 Made by: Axoninova community
@@ -54,7 +56,7 @@ Invite: https://dsc.gg/axoninnova
 This is a mindset tool designed 
 to reduce cognitive load and 
 enable deep work.
-        """, classes="modal-panel")
+        """)
 
 class TermFlowApp(App):
     CSS_PATH = "styles.tcss"
@@ -69,6 +71,7 @@ class TermFlowApp(App):
     ]
 
     flow_state = reactive("IDLE")
+    intention = reactive("")
 
     def compose(self) -> ComposeResult:
         yield Header()
@@ -79,18 +82,47 @@ class TermFlowApp(App):
                 ClockPanel(id="clock"),
                 PomodoroPanel(id="pomodoro"),
                 InfoPanel(id="info"),
+                id="dashboard-grid"
             )
+            yield Static("", id="flow-intention", classes="hidden")
+            yield Static("", id="focus-buddy", classes="hidden")
         yield Footer()
 
     def watch_flow_state(self, state: str) -> None:
         self.set_class(state == "DEEP", "state-deep")
+        dashboard = self.query_one("#dashboard-grid")
+        intention_display = self.query_one("#flow-intention")
+        buddy = self.query_one("#focus-buddy")
+        
+        if state == "DEEP":
+            dashboard.add_class("hidden")
+            intention_display.remove_class("hidden")
+            buddy.remove_class("hidden")
+            intention_display.update(f"[bold cyan]Intention:[/] {self.intention}")
+            # Ensure essential panels remain visible in Flow Mode
+            self.query_one("#pomodoro").remove_class("hidden")
+            self.query_one("#clock").remove_class("hidden")
+            self.query_one("#info").remove_class("hidden")
+            buddy.update("✨ [italic]Begin.[/]")
+        else:
+            dashboard.remove_class("hidden")
+            intention_display.add_class("hidden")
+            buddy.add_class("hidden")
+            # Restore visibility of all panels when exiting Flow Mode
+            self.query_one("#pomodoro").remove_class("hidden")
+            self.query_one("#clock").remove_class("hidden")
+            self.query_one("#info").remove_class("hidden")
+            self.query_one("#todo").remove_class("hidden")
 
     def action_enter_flow(self) -> None:
-        self.flow_state = "DEEP"
-        try:
-            self.query_one(PomodoroPanel).handle_toggle()
-        except:
-            pass
+        if self.flow_state == "IDLE":
+            # Simple prompt for intention (simplified for now)
+            self.intention = "Focus Session" 
+            self.flow_state = "DEEP"
+            try:
+                self.query_one(PomodoroPanel).handle_toggle()
+            except:
+                pass
 
     def action_exit_flow(self) -> None:
         self.flow_state = "IDLE"

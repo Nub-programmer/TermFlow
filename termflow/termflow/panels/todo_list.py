@@ -53,7 +53,8 @@ class TodoPanel(Static):
     
     def on_list_view_selected(self, event: ListView.Selected) -> None:
         """Toggle todo on selection (Enter key by default in ListView)."""
-        # In a real app we might differentiate keys, but for now selection toggles.
+        if self.app.flow_state == "DEEP":
+            return
         item = event.item
         if isinstance(item, TodoItem):
             toggle_todo(item.index)
@@ -61,6 +62,8 @@ class TodoPanel(Static):
             
     def key_space(self) -> None:
         """Toggle selected item."""
+        if self.app.flow_state == "DEEP":
+            return
         list_view = self.query_one("#todo-list", ListView)
         if list_view.highlighted_child:
             item = list_view.highlighted_child
@@ -70,6 +73,8 @@ class TodoPanel(Static):
 
     def key_delete(self) -> None:
         """Delete selected item."""
+        if self.app.flow_state == "DEEP":
+            return
         list_view = self.query_one("#todo-list", ListView)
         if list_view.highlighted_child:
             item = list_view.highlighted_child

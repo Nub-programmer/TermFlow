@@ -18,13 +18,8 @@ class InfoPanel(Static):
 
     async def fetch_data(self):
         try:
-            w = get_weather()
-        except:
-            w = "Global: 18°C"
-        try:
             q = get_quote()
         except:
             q = "Stay focused."
         
-        self.query_one("#weather", Label).update(f"Weather: {w}")
-        self.query_one("#quote", Label).update(q)
+        self.query_one("#reflection", Label).update(q)
