@@ -6,6 +6,10 @@ Grid {
     padding: 1;
 }
 
+.hidden {
+    display: none;
+}
+
 #logo {
     content-align: center middle;
     height: auto;
@@ -30,38 +34,55 @@ Grid {
     color: $warning;
 }
 
-#help-overlay {
-    display: none;
-    width: 60;
-    height: 30;
-    background: $surface;
-    border: double $primary;
-    padding: 1 2;
-    layer: overlay;
+#flow-container {
+    height: 100%;
+    width: 100%;
 }
 
-#help-content {
-    width: 100%;
-    height: 100%;
+#focus-buddy {
+    width: 25;
+    height: 10;
+    border: thick $warning;
+    content-align: center middle;
+    padding: 1;
+    margin: 1;
+}
+
+#flow-content {
+    width: 1fr;
     content-align: center middle;
 }
 
-#sessions-count {
-    color: $text-muted;
+#flow-intention {
+    width: 100%;
+    text-align: center;
+    padding: 1;
+    border: double $accent;
     margin-bottom: 1;
 }
 
-.button-row {
+/* Buddy Layouts */
+.pos-left #focus-buddy {
+    dock: left;
+}
+
+.pos-right #focus-buddy {
+    dock: right;
+}
+
+.pos-inline #focus-buddy {
+    width: 100%;
     height: auto;
-    align: center middle;
-    margin-top: 1;
+    border: none;
+    margin-top: 2;
 }
 
-.button-row Button {
-    margin: 0 1;
-}
-
-.panel-header {
-    text-style: bold underline;
-    margin-bottom: 1;
+.modal-panel {
+    background: $surface;
+    border: double $primary;
+    padding: 1 2;
+    margin: 4 8;
+    height: auto;
+    width: auto;
+    max-width: 80;
 }
