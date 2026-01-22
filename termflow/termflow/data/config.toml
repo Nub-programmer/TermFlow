@@ -1,3 +1,3 @@
 pomodoro_duration = 25
 pomodoro_sessions_completed = 0
-buddy_enabled = false
+buddy_enabled = true
