@@ -44,20 +44,60 @@ Grid {
     display: none;
 }
 
-#flow-intention {
-    text-align: center;
-    margin-top: 2;
-    font-size: 150%;
-    color: $cyan;
+#flow-container {
+    grid-size: 1;
+    height: auto;
+    margin-top: 1;
+}
+
+#flow-container.buddy-left {
+    grid-size: 2;
+    grid-columns: 1fr 1fr;
+}
+
+#flow-container.buddy-right {
+    grid-size: 2;
+    grid-columns: 1fr 1fr;
+}
+
+#flow-container.buddy-left #focus-buddy {
+    column-span: 1;
+    order: 1;
+}
+
+#flow-container.buddy-left #flow-content {
+    column-span: 1;
+    order: 2;
+}
+
+#flow-container.buddy-right #focus-buddy {
+    column-span: 1;
+    order: 2;
+}
+
+#flow-container.buddy-right #flow-content {
+    column-span: 1;
+    order: 1;
 }
 
 #focus-buddy {
     text-align: center;
-    margin-top: 1;
     color: $yellow;
-    opacity: 1.0;
-    height: 2;
+    height: 20;
     width: 100%;
+    border: none;
+}
+
+#flow-content {
+    text-align: center;
+    padding-top: 5;
+}
+
+#flow-intention {
+    text-align: center;
+    font-size: 150%;
+    color: $cyan;
+    margin-bottom: 2;
 }
 
 .state-deep {
