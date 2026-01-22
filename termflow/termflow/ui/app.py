@@ -141,6 +141,10 @@ class TermFlowApp(App):
                 yield Static("", id="focus-buddy", classes="hidden")
                 with VerticalScroll(id="flow-content"):
                     yield Static("[bold cyan]Intention:[/] ", id="flow-intention")
+                    with Grid(id="flow-panels"):
+                        yield ClockPanel(id="flow-clock")
+                        yield PomodoroPanel(id="flow-pomodoro")
+                        yield InfoPanel(id="flow-info")
         yield Footer()
 
     def watch_flow_state(self, state: str) -> None:
@@ -156,11 +160,6 @@ class TermFlowApp(App):
             
             # Simulated session progress
             self.set_timer(10, lambda: setattr(self, "buddy_state", "FOCUS"))
-            
-            # Ensure panels remain visible
-            self.query_one("#pomodoro").remove_class("hidden")
-            self.query_one("#clock").remove_class("hidden")
-            self.query_one("#info").remove_class("hidden")
         else:
             dashboard.remove_class("hidden")
             flow_container.add_class("hidden")
@@ -229,12 +228,17 @@ class TermFlowApp(App):
         buddy_widget.update(f"[bold yellow]{art}[/]")
 
     def get_system_commands(self) -> list:
-        # Integrated into command palette by providing list of commands
+        from textual.app import SystemCommand
         return [
-            ("Toggle Buddy", self.action_toggle_buddy),
-            ("Buddy Position: Left", self.action_set_buddy_left),
-            ("Buddy Position: Right", self.action_set_buddy_right),
+            SystemCommand("Toggle Focus Buddy", "Toggle Focus Buddy", self.action_toggle_buddy),
+            SystemCommand("Buddy Position: Left", "Buddy Position: Left", self.action_set_buddy_left),
+            SystemCommand("Buddy Position: Right", "Buddy Position: Right", self.action_set_buddy_right),
         ]
+
+    def action_command_palette(self) -> None:
+        """Explicitly trigger the command palette."""
+        from textual.command import CommandPalette
+        self.push_screen(CommandPalette())
 
     def action_enter_flow(self) -> None:
         if self.flow_state == "IDLE":

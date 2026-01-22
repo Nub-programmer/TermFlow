@@ -10,6 +10,7 @@ class InfoPanel(Static):
 
     def on_mount(self):
         self.update_info()
+        self.set_interval(300, self.update_info)
 
     def update_info(self):
         # Pass the coroutine object, not the result of calling it if it expects a coroutine
