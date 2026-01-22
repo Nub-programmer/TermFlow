@@ -229,11 +229,13 @@ class TermFlowApp(App):
 
     def get_system_commands(self) -> list:
         from textual.app import SystemCommand
-        return [
+        # Get default system commands and add custom ones
+        commands = [
             SystemCommand("Toggle Focus Buddy", "Toggle Focus Buddy", self.action_toggle_buddy),
             SystemCommand("Buddy Position: Left", "Buddy Position: Left", self.action_set_buddy_left),
             SystemCommand("Buddy Position: Right", "Buddy Position: Right", self.action_set_buddy_right),
         ]
+        return commands
 
     def action_command_palette(self) -> None:
         """Explicitly trigger the command palette."""
