@@ -13,10 +13,8 @@ from termflow.termflow.panels.info import InfoPanel
 from termflow.termflow.utils.storage import load_config, save_config
 
 class TermFlowCommandProvider(Provider):
-    """A command provider for TermFlow commands."""
     async def search(self, query: str) -> Hits:
         matcher = self.matcher(query)
-        
         commands = [
             ("Toggle Focus Buddy", self.app.action_toggle_buddy, "Show/Hide focus buddy"),
             ("Buddy: Position Left", self.app.action_set_buddy_left, "Place buddy on left"),
@@ -28,7 +26,6 @@ class TermFlowCommandProvider(Provider):
             ("Theme: Default", lambda: setattr(self.app, "theme", "builtin:dark"), "Switch to dark theme"),
             ("Theme: Light", lambda: setattr(self.app, "theme", "builtin:light"), "Switch to light theme"),
         ]
-        
         for name, callback, help_text in commands:
             score = matcher.match(name)
             if score > 0:
@@ -52,7 +49,7 @@ class HelpScreen(ModalScreen):
         Binding("h", "dismiss", "Close"),
     ]
     def compose(self) -> ComposeResult:
-        with VerticalScroll(classes="modal-panel"):
+        with VerticalScroll(id="help-scroll", classes="modal-panel"):
             yield Static("""
 [bold underline]TermFlow Keybindings[/]
 
@@ -76,7 +73,7 @@ class InfoScreen(ModalScreen):
         Binding("i", "dismiss", "Close"),
     ]
     def compose(self) -> ComposeResult:
-        with VerticalScroll(classes="modal-panel"):
+        with VerticalScroll(id="info-scroll", classes="modal-panel"):
             yield Static("""
 [bold]TermFlow[/]
 Project: TermFlow
@@ -94,7 +91,7 @@ class TermFlowApp(App):
     COMMANDS = App.COMMANDS | {TermFlowCommandProvider}
     BINDINGS = [
         Binding("f", "enter_flow", "Flow", show=True),
-        Binding("escape", "exit_flow", "Exit", show=False),
+        Binding("escape", "exit_flow_safe", "Exit", show=False),
         Binding("p", "pause_timer", "Pause", show=True),
         Binding("t", "add_todo", "Add", show=True),
         Binding("h,question_mark", "toggle_help", "Help", show=True),
@@ -108,43 +105,45 @@ class TermFlowApp(App):
     intention = reactive("")
     buddy_enabled = reactive(False)
     buddy_state = reactive("IDLE")
-    buddy_position = reactive("left") # left, right, inline
+    buddy_position = reactive("left")
 
     def on_mount(self) -> None:
         config = load_config()
-        if not isinstance(config, dict):
-            config = {}
+        if not isinstance(config, dict): config = {}
         self.buddy_enabled = config.get("buddy_enabled", False)
         self.buddy_position = config.get("buddy_position", "left")
+
+    def action_exit_flow_safe(self) -> None:
+        if self.flow_state == "DEEP":
+            self.action_exit_flow()
+        else:
+            # Check if there are active screens to pop
+            if len(self.screen_stack) > 1:
+                self.pop_screen()
 
     def action_toggle_buddy(self) -> None:
         self.buddy_enabled = not self.buddy_enabled
         self.save_current_config()
-        self.notify(f"Buddy: {'ON' if self.buddy_enabled else 'OFF'}")
         self.update_buddy_layout()
 
     def action_set_buddy_left(self) -> None:
         self.buddy_position = "left"
         self.save_current_config()
-        self.notify("Buddy Position: Left")
         self.update_buddy_layout()
 
     def action_set_buddy_right(self) -> None:
         self.buddy_position = "right"
         self.save_current_config()
-        self.notify("Buddy Position: Right")
         self.update_buddy_layout()
 
     def action_set_buddy_inline(self) -> None:
         self.buddy_position = "inline"
         self.save_current_config()
-        self.notify("Buddy Position: Inline")
         self.update_buddy_layout()
 
     def save_current_config(self) -> None:
         config = load_config()
-        if not isinstance(config, dict):
-            config = {}
+        if not isinstance(config, dict): config = {}
         config["buddy_enabled"] = self.buddy_enabled
         config["buddy_position"] = self.buddy_position
         save_config(config)
@@ -152,11 +151,8 @@ class TermFlowApp(App):
     def update_buddy_layout(self) -> None:
         if self.flow_state == "DEEP":
             container = self.query_one("#flow-container", Horizontal)
-            buddy_widget = self.query_one("#focus-buddy")
-            
-            # Remove all position classes
+            buddy_widget = self.query_one("#focus-buddy", Static)
             container.remove_class("pos-left", "pos-right", "pos-inline")
-            
             if self.buddy_enabled:
                 container.add_class(f"pos-{self.buddy_position}")
                 buddy_widget.remove_class("hidden")
@@ -165,8 +161,7 @@ class TermFlowApp(App):
                 buddy_widget.add_class("hidden")
 
     def compose(self) -> ComposeResult:
-        header = Header()
-        yield header
+        yield Header()
         with Container(id="main-container"):
             with VerticalScroll(id="dashboard-view"):
                 yield Static(ASCII_LOGO, id="logo")
@@ -177,7 +172,6 @@ class TermFlowApp(App):
                     InfoPanel(id="info"),
                     id="dashboard-grid"
                 )
-            
             with Horizontal(id="flow-container", classes="hidden"):
                 yield Static("", id="focus-buddy", classes="hidden")
                 with VerticalScroll(id="flow-content"):
@@ -185,38 +179,24 @@ class TermFlowApp(App):
         yield Footer()
 
     def watch_flow_state(self, state: str) -> None:
-        is_deep = (state == "DEEP")
         dashboard = self.query_one("#dashboard-view")
         flow_view = self.query_one("#flow-container")
-        
-        if is_deep:
+        if state == "DEEP":
             dashboard.add_class("hidden")
             flow_view.remove_class("hidden")
-            
-            intention_static = self.query_one("#flow-intention")
-            intention_static.update(f"[bold cyan]Intention:[/] {self.intention}")
-            
+            self.query_one("#flow-intention", Static).update(f"[bold cyan]Intention:[/] {self.intention}")
             self.update_buddy_layout()
-            self.buddy_state = "IDLE"
-            
-            # Auto-start Pomodoro
             try:
                 pomo = self.query_one(PomodoroPanel)
-                if hasattr(pomo, "timer_active") and not pomo.timer_active:
-                    pomo.handle_toggle()
-            except:
-                pass
+                if not pomo.timer_active: pomo.handle_toggle()
+            except: pass
         else:
             dashboard.remove_class("hidden")
             flow_view.add_class("hidden")
-            self.buddy_state = "IDLE"
 
     def watch_buddy_state(self, state: str) -> None:
-        if not self.buddy_enabled or self.flow_state != "DEEP":
-            return
-            
+        if not self.buddy_enabled or self.flow_state != "DEEP": return
         buddy_widget = self.query_one("#focus-buddy", Static)
-        
         BUDDY_TYPES = {
             "human": {
                 "IDLE": "  (｡•̀ᴗ-)✧  \n   /|\\   \n   / \\   \n [Begin]",
@@ -234,58 +214,44 @@ class TermFlowApp(App):
                 "REST": "  __      _ \n -'')}____// \n  `_/      ) \n  (_(_/-(_/  \n [Done]"
             }
         }
-        
         config = load_config()
-        if not isinstance(config, dict):
-            config = {}
-        b_type = str(config.get("buddy_type", "human"))
-        type_data = BUDDY_TYPES.get(b_type, BUDDY_TYPES["human"])
-        art = type_data.get(state, "[Buddy]")
+        b_type = str(config.get("buddy_type", "human")) if isinstance(config, dict) else "human"
+        art = BUDDY_TYPES.get(b_type, BUDDY_TYPES["human"]).get(state, "[Buddy]")
         buddy_widget.update(Art(art))
 
     def set_buddy_type(self, b_type: str) -> None:
         config = load_config()
-        if not isinstance(config, dict):
-            config = {}
+        if not isinstance(config, dict): config = {}
         config["buddy_type"] = b_type
         save_config(config)
-        self.notify(f"Buddy set to {b_type.capitalize()}")
         self.watch_buddy_state(self.buddy_state)
 
     def action_command_palette(self) -> None:
-        """Explicitly trigger the command palette."""
         from textual.command import CommandPalette
         self.push_screen(CommandPalette())
 
     def action_enter_flow(self) -> None:
         if self.flow_state == "IDLE":
-            if not self.intention:
-                self.intention = "Focus Session"
+            self.intention = "Focus Session"
             self.flow_state = "DEEP"
 
     def action_exit_flow(self) -> None:
         self.flow_state = "IDLE"
 
     def action_pause_timer(self) -> None:
-        try:
-            self.query_one(PomodoroPanel).handle_toggle()
-        except:
-            pass
+        try: self.query_one(PomodoroPanel).handle_toggle()
+        except: pass
 
     def action_add_todo(self) -> None:
         if self.flow_state == "IDLE":
-            try:
-                self.query_one(TodoPanel).focus_input()
-            except:
-                pass
+            try: self.query_one(TodoPanel).focus_input()
+            except: pass
 
     def action_toggle_help(self) -> None:
-        if self.flow_state == "IDLE":
-            self.push_screen(HelpScreen())
+        if self.flow_state == "IDLE": self.push_screen(HelpScreen())
 
     def action_toggle_info(self) -> None:
-        if self.flow_state == "IDLE":
-            self.push_screen(InfoScreen())
+        if self.flow_state == "IDLE": self.push_screen(InfoScreen())
 
 if __name__ == "__main__":
     TermFlowApp().run()

@@ -20,12 +20,14 @@ Grid {
     row-span: 3;
     border: double $accent;
     padding: 1;
+    min-height: 15;
 }
 
 #clock, #pomodoro, #info {
     border: round $primary;
     padding: 1;
     content-align: center middle;
+    min-height: 8;
 }
 
 #timer {
@@ -40,8 +42,8 @@ Grid {
 }
 
 #focus-buddy {
-    width: 25;
-    height: 10;
+    width: 30;
+    height: 12;
     border: thick $warning;
     content-align: center middle;
     padding: 1;
@@ -61,15 +63,8 @@ Grid {
     margin-bottom: 1;
 }
 
-/* Buddy Layouts */
-.pos-left #focus-buddy {
-    dock: left;
-}
-
-.pos-right #focus-buddy {
-    dock: right;
-}
-
+.pos-left #focus-buddy { dock: left; }
+.pos-right #focus-buddy { dock: right; }
 .pos-inline #focus-buddy {
     width: 100%;
     height: auto;
@@ -80,9 +75,14 @@ Grid {
 .modal-panel {
     background: $surface;
     border: double $primary;
-    padding: 1 2;
+    padding: 2 4;
     margin: 4 8;
-    height: auto;
-    width: auto;
+    height: 100%;
+    width: 100%;
     max-width: 80;
+    content-align: center middle;
+}
+
+.modal-panel Static {
+    width: 100%;
 }

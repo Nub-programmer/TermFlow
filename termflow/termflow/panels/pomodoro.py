@@ -1,4 +1,5 @@
 from textual.widgets import Static, Button, Label
+from textual.containers import Horizontal
 from textual.reactive import reactive
 from typing import TYPE_CHECKING, Any
 from termflow.termflow.utils.storage import load_config, increment_pomodoro_session
@@ -19,7 +20,7 @@ class PomodoroPanel(Static):
         yield Label("[bold red]POMODORO[/]", classes="panel-header")
         yield Label(f"{config.get('pomodoro_duration', 25)}:00", id="timer")
         yield Label(f"Sessions today: {self.sessions}", id="sessions-count")
-        with Static(classes="button-row"):
+        with Horizontal(classes="button-row"):
             yield Button("Start/Pause", id="toggle", variant="success")
             yield Button("Reset", id="reset", variant="primary")
 
