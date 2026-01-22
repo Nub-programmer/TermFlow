@@ -10,6 +10,7 @@ from termflow.termflow.panels.clock import ClockPanel
 from termflow.termflow.panels.todo_list import TodoPanel
 from termflow.termflow.panels.pomodoro import PomodoroPanel
 from termflow.termflow.panels.info import InfoPanel
+from termflow.termflow.utils.storage import load_config, save_config
 
 class TermFlowCommandProvider(Provider):
     """A command provider for TermFlow commands."""
@@ -88,8 +89,6 @@ to reduce cognitive load and
 enable deep work.
         """)
 
-from termflow.termflow.utils.storage import load_config, save_config
-
 class TermFlowApp(App):
     CSS_PATH = "styles.tcss"
     COMMANDS = App.COMMANDS | {TermFlowCommandProvider}
@@ -154,7 +153,6 @@ class TermFlowApp(App):
         if self.flow_state == "DEEP":
             container = self.query_one("#flow-container", Horizontal)
             buddy_widget = self.query_one("#focus-buddy")
-            content = self.query_one("#flow-content")
             
             # Remove all position classes
             container.remove_class("pos-left", "pos-right", "pos-inline")
@@ -184,8 +182,6 @@ class TermFlowApp(App):
                 yield Static("", id="focus-buddy", classes="hidden")
                 with VerticalScroll(id="flow-content"):
                     yield Static("", id="flow-intention")
-                    # We'll use classes to move existing panels here if needed
-                    # but for now we follow the instruction to keep logic same
         yield Footer()
 
     def watch_flow_state(self, state: str) -> None:
@@ -263,72 +259,6 @@ class TermFlowApp(App):
 
     def action_enter_flow(self) -> None:
         if self.flow_state == "IDLE":
-            if not self.intention:
-                self.intention = "Focus Session"
-            self.flow_state = "DEEP"
-
-    def action_exit_flow(self) -> None:
-        self.flow_state = "IDLE"
-
-    def action_pause_timer(self) -> None:
-        try:
-            self.query_one(PomodoroPanel).handle_toggle()
-        except:
-            pass
-
-    def action_add_todo(self) -> None:
-        if self.flow_state == "IDLE":
-            try:
-                self.query_one(TodoPanel).focus_input()
-            except:
-                pass
-
-    def action_toggle_help(self) -> None:
-        if self.flow_state == "IDLE":
-            self.push_screen(HelpScreen())
-
-    def action_toggle_info(self) -> None:
-        if self.flow_state == "IDLE":
-            self.push_screen(InfoScreen())
-
-if __name__ == "__main__":
-    TermFlowApp().run()
-        
-        config = load_config()
-        # Cast to dict if it's not
-        if not isinstance(config, dict):
-            config = {}
-        b_type = str(config.get("buddy_type", "human"))
-        type_data = BUDDY_TYPES.get(b_type, BUDDY_TYPES["human"])
-        art = type_data.get(state, "[Buddy]")
-        buddy_widget.update(f"[bold yellow]{art}[/]")
-
-    def get_system_commands(self, screen) -> list:
-        from textual.command import SystemCommand
-        return [
-            SystemCommand("Toggle Focus Buddy", "Show/Hide buddy", self.action_toggle_buddy),
-            SystemCommand("Buddy: Human", "Set buddy to Human", lambda: self.set_buddy_type("human")),
-            SystemCommand("Buddy: Cat", "Set buddy to Cat", lambda: self.set_buddy_type("cat")),
-            SystemCommand("Buddy: Dog", "Set buddy to Dog", lambda: self.set_buddy_type("dog")),
-        ]
-
-    def set_buddy_type(self, b_type: str) -> None:
-        config = load_config()
-        if not isinstance(config, dict):
-            config = {}
-        config["buddy_type"] = b_type
-        save_config(config)
-        self.notify(f"Buddy set to {b_type.capitalize()}")
-        self.watch_buddy_state(self.buddy_state)
-
-    def action_command_palette(self) -> None:
-        """Explicitly trigger the command palette."""
-        from textual.command import CommandPalette
-        self.push_screen(CommandPalette())
-
-    def action_enter_flow(self) -> None:
-        if self.flow_state == "IDLE":
-            # In a real app we'd prompt, but here we just enter
             if not self.intention:
                 self.intention = "Focus Session"
             self.flow_state = "DEEP"
