@@ -82,6 +82,8 @@ class TermFlowApp(App):
 
     def on_mount(self) -> None:
         config = load_config()
+        if not isinstance(config, dict):
+            config = {}
         self.buddy_enabled = config.get("buddy_enabled", False)
         self.buddy_position = config.get("buddy_position", "left")
 
@@ -105,6 +107,8 @@ class TermFlowApp(App):
 
     def save_current_config(self) -> None:
         config = load_config()
+        if not isinstance(config, dict):
+            config = {}
         config["buddy_enabled"] = self.buddy_enabled
         config["buddy_position"] = self.buddy_position
         save_config(config)
@@ -167,7 +171,7 @@ class TermFlowApp(App):
             try:
                 pomo = self.query_one(PomodoroPanel)
                 # Check if pomo has start/active state correctly
-                if hasattr(pomo, "active") and not pomo.active:
+                if hasattr(pomo, "timer_active") and not pomo.timer_active:
                     pomo.handle_toggle()
             except:
                 pass
@@ -221,9 +225,13 @@ class TermFlowApp(App):
             SystemCommand("Buddy: Human", "Set buddy to Human", lambda: self.set_buddy_type("human")),
             SystemCommand("Buddy: Cat", "Set buddy to Cat", lambda: self.set_buddy_type("cat")),
             SystemCommand("Buddy: Dog", "Set buddy to Dog", lambda: self.set_buddy_type("dog")),
-            SystemCommand("Buddy Position: Left", "Move buddy left", self.action_set_buddy_left),
-            SystemCommand("Buddy Position: Right", "Move buddy right", self.action_set_buddy_right),
         ]
+
+    def set_buddy_type(self, b_type: str) -> None:
+        config = load_config()
+        if not isinstance(config, dict):
+            config = {}
+        config["buddy_type"] = b_type
         save_config(config)
         self.notify(f"Buddy set to {b_type.capitalize()}")
         self.watch_buddy_state(self.buddy_state)

@@ -55,17 +55,17 @@ Grid {
 
 #dashboard-grid.flow-layout #clock {
     grid-row-span: 1;
-    grid-column-span: 2;
+    grid-column-span: 1;
 }
 
 #dashboard-grid.flow-layout #pomodoro {
     grid-row-span: 1;
-    grid-column-span: 2;
+    grid-column-span: 1;
 }
 
 #dashboard-grid.flow-layout #info {
     grid-row-span: 1;
-    grid-column-span: 2;
+    grid-column-span: 1;
 }
 
 #flow-intention {
@@ -84,7 +84,7 @@ Grid {
 }
 
 .state-deep #main-scroll {
-    background: $background-darken-1;
+    background: $background-darken-3;
 }
 
 .state-deep {
