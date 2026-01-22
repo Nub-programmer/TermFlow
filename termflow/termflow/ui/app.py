@@ -111,22 +111,15 @@ class TermFlowApp(App):
 
     def update_buddy_layout(self) -> None:
         if self.flow_state == "DEEP":
-            container = self.query_one("#flow-container")
             buddy_widget = self.query_one("#focus-buddy")
-            
             if self.buddy_enabled:
-                container.set_class(self.buddy_position == "left", "buddy-left")
-                container.set_class(self.buddy_position == "right", "buddy-right")
                 buddy_widget.remove_class("hidden")
                 self.watch_buddy_state(self.buddy_state)
             else:
-                container.remove_class("buddy-left")
-                container.remove_class("buddy-right")
                 buddy_widget.add_class("hidden")
 
     def compose(self) -> ComposeResult:
         header = Header()
-        header.show_clock = False
         yield header
         with VerticalScroll(id="main-scroll"):
             yield Static(ASCII_LOGO, id="logo")
@@ -137,38 +130,55 @@ class TermFlowApp(App):
                 InfoPanel(id="info"),
                 id="dashboard-grid"
             )
-            with Grid(id="flow-container", classes="hidden"):
-                yield Static("", id="focus-buddy", classes="hidden")
-                with VerticalScroll(id="flow-content"):
-                    yield Static("[bold cyan]Intention:[/] ", id="flow-intention")
-                    with Grid(id="flow-panels"):
-                        yield ClockPanel(id="flow-clock")
-                        yield PomodoroPanel(id="flow-pomodoro")
-                        yield InfoPanel(id="flow-info")
+            # Focus Buddy - single instance
+            yield Static("", id="focus-buddy", classes="hidden")
+            # Flow Mode specific elements
+            yield Static("", id="flow-intention", classes="hidden")
         yield Footer()
 
     def watch_flow_state(self, state: str) -> None:
         self.set_class(state == "DEEP", "state-deep")
-        dashboard = self.query_one("#dashboard-grid")
-        flow_container = self.query_one("#flow-container")
+        is_deep = (state == "DEEP")
         
-        if state == "DEEP":
-            dashboard.add_class("hidden")
-            flow_container.remove_class("hidden")
-            self.query_one("#flow-intention").update(f"[bold cyan]Intention:[/] {self.intention}")
-            self.update_buddy_layout()
+        # UI Toggling logic (using classes)
+        todo = self.query_one("#todo")
+        clock = self.query_one("#clock")
+        pomodoro = self.query_one("#pomodoro")
+        info = self.query_one("#info")
+        logo = self.query_one("#logo")
+        intention_static = self.query_one("#flow-intention")
+        buddy_widget = self.query_one("#focus-buddy")
+
+        if is_deep:
+            # Hide non-essential
+            todo.add_class("hidden")
+            logo.add_class("hidden")
+            # Show Flow elements
+            intention_static.remove_class("hidden")
+            intention_static.update(f"[bold cyan]Intention:[/] {self.intention}")
             
-            # Simulated session progress
-            self.set_timer(10, lambda: setattr(self, "buddy_state", "FOCUS"))
-        else:
-            dashboard.remove_class("hidden")
-            flow_container.add_class("hidden")
+            # Position core panels for Flow Mode (via CSS classes)
+            self.query_one("#dashboard-grid").add_class("flow-layout")
+            
+            # Buddy logic
+            self.update_buddy_layout()
             self.buddy_state = "IDLE"
+            # Auto-start Pomodoro if not running
             try:
-                self.query_one("#todo").remove_class("hidden")
+                pomo = self.query_one(PomodoroPanel)
+                # Check if pomo has start/active state correctly
+                if hasattr(pomo, "active") and not pomo.active:
+                    pomo.handle_toggle()
             except:
                 pass
-            self.refresh()
+        else:
+            # Restore Dashboard
+            todo.remove_class("hidden")
+            logo.remove_class("hidden")
+            intention_static.add_class("hidden")
+            buddy_widget.add_class("hidden")
+            self.query_one("#dashboard-grid").remove_class("flow-layout")
+            self.buddy_state = "IDLE"
 
     def watch_buddy_state(self, state: str) -> None:
         if not self.buddy_enabled or self.flow_state != "DEEP":
@@ -176,66 +186,47 @@ class TermFlowApp(App):
             
         buddy_widget = self.query_one("#focus-buddy")
         
-        # ANIME ASCII ART (12+ lines each)
-        IDLE_ART = """
-      .---.
-     /     \\
-    | () () |
-     \\  ^  /
-      |||||
-      |||||
-     /     \\
-    /       \\
-    |       |
-    |       |
-    /       \\
-   /_/     \\_\\
-      [Begin.]
-"""
-        FOCUS_ART = """
-      .---.
-     /|   |\\
-    | (O) (O) |
-     \\  -  /
-      |||||
-    --|||||--
-   /  |||||  \\
-  /   |||||   \\
-  |   |||||   |
-  \\   |||||   /
-   \\  |||||  /
-    --     --
-      [Focus.]
-"""
-        REST_ART = """
-      .---.
-     /     \\
-    | (-) (-) |
-     \\  _  /
-      |||||
-    __|||||__
-   /         \\
-  /           \\
-  |           |
-  |           |
-  \\           /
-   \\_________/
-      [Done.]
-"""
+        # Simplified Animated Buddy (Human, Cat, Dog)
+        BUDDY_TYPES = {
+            "human": {
+                "IDLE": "  O  \n /|\\ \n / \\ \n[Begin]",
+                "FOCUS": " \\O/ \n  |  \n / \\ \n[Focus]",
+                "REST": "  O  \n -|- \n / \\ \n[Done]"
+            },
+            "cat": {
+                "IDLE": " |\\__/,|   (`\\\n |_ _  |.--.) )\n ( T   )     /\n(((^_((_(_((_(\n[Meow]",
+                "FOCUS": " |\\__/,|   (`\\\n |o o  |.--.) )\n ( T   )     /\n(((^_((_(_((_(\n[Focus]",
+                "REST": " |\\__/,|   (`\\\n |u u  |.--.) )\n ( T   )     /\n(((^_((_(_((_(\n[Zzz]"
+            },
+            "dog": {
+                "IDLE": " / \\__\n(    @\\___\n /         O\n/   (_____/\n/_____/   U\n[Woof]",
+                "FOCUS": " / \\__\n(    O\\___\n /         O\n/   (_____/\n/_____/   U\n[Focus]",
+                "REST": " / \\__\n(    -\\___\n /         O\n/   (_____/\n/_____/   U\n[Done]"
+            }
+        }
         
-        arts = {"IDLE": IDLE_ART, "FOCUS": FOCUS_ART, "REST": REST_ART}
-        art = arts.get(state, IDLE_ART)
+        config = load_config()
+        # Cast to dict if it's not
+        if not isinstance(config, dict):
+            config = {}
+        b_type = str(config.get("buddy_type", "human"))
+        type_data = BUDDY_TYPES.get(b_type, BUDDY_TYPES["human"])
+        art = type_data.get(state, "[Buddy]")
         buddy_widget.update(f"[bold yellow]{art}[/]")
 
-    def get_system_commands(self) -> list:
-        from textual.app import SystemCommand
-        # Get default system commands and add custom ones
-        commands = [
-            SystemCommand("Toggle Focus Buddy", "Toggle Focus Buddy", self.action_toggle_buddy),
-            SystemCommand("Buddy Position: Left", "Buddy Position: Left", self.action_set_buddy_left),
-            SystemCommand("Buddy Position: Right", "Buddy Position: Right", self.action_set_buddy_right),
+    def get_system_commands(self, screen) -> list:
+        from textual.command import SystemCommand
+        return [
+            SystemCommand("Toggle Focus Buddy", "Show/Hide buddy", self.action_toggle_buddy),
+            SystemCommand("Buddy: Human", "Set buddy to Human", lambda: self.set_buddy_type("human")),
+            SystemCommand("Buddy: Cat", "Set buddy to Cat", lambda: self.set_buddy_type("cat")),
+            SystemCommand("Buddy: Dog", "Set buddy to Dog", lambda: self.set_buddy_type("dog")),
+            SystemCommand("Buddy Position: Left", "Move buddy left", self.action_set_buddy_left),
+            SystemCommand("Buddy Position: Right", "Move buddy right", self.action_set_buddy_right),
         ]
-        return commands
+        save_config(config)
+        self.notify(f"Buddy set to {b_type.capitalize()}")
+        self.watch_buddy_state(self.buddy_state)
 
     def action_command_palette(self) -> None:
         """Explicitly trigger the command palette."""
@@ -246,12 +237,8 @@ class TermFlowApp(App):
         if self.flow_state == "IDLE":
             # In a real app we'd prompt, but here we just enter
             if not self.intention:
-                self.intention = "Deep Work"
+                self.intention = "Focus Session"
             self.flow_state = "DEEP"
-            try:
-                self.query_one(PomodoroPanel).handle_toggle()
-            except:
-                pass
 
     def action_exit_flow(self) -> None:
         self.flow_state = "IDLE"

@@ -1,0 +1,320 @@
+SYSTEM / DEVELOPER PROMPT
+
+You are working on a serious, production-grade, terminal-first productivity application called TermFlow, built using Python + Textual.
+
+This is NOT a demo, NOT a UI experiment, and NOT a chatbot project.
+
+You must STRICTLY FOLLOW ALL CONSTRAINTS BELOW.
+If any requirement is unclear, DO NOT INVENT FEATURES — infer conservatively.
+
+🔒 CORE PHILOSOPHY (NON-NEGOTIABLE)
+
+Terminal-native
+
+Keyboard-first (NO mouse assumptions)
+
+Flow-state oriented
+
+Minimal UI, maximum clarity
+
+Calm, intentional, distraction-free
+
+No gimmicks, no flashy redesigns
+
+Do not redesign the UI. Fix and restore it.
+
+🚨 CURRENT STATE (IMPORTANT CONTEXT)
+
+The app is PARTIALLY BROKEN.
+
+Known issues:
+
+Flow Buddy does not render
+
+Flow Mode does not hide non-essential panels correctly
+
+Intention text shows but Flow Mode is incomplete
+
+Some command palette actions are missing or broken
+
+Prior attempts duplicated panels (this MUST NOT happen again)
+
+⚠️ ABSOLUTE RULE:
+There must be ONLY ONE INSTANCE of each panel:
+
+Todo
+
+Clock
+
+Pomodoro
+
+Reflection / Info
+
+NO duplicated widgets. NO shadow panels. NO re-creation during Flow Mode.
+
+🛠️ CRITICAL FIXES (DO THESE FIRST)
+1️⃣ Time & Locale (NO APIs)
+
+Time must use system local time
+
+Use Python datetime / time.localtime
+
+Live updating
+
+No hardcoded timezone
+
+No external libraries
+
+2️⃣ Branding (MUST NEVER BREAK)
+
+Restore and permanently keep:
+"your minimalist terminal productivity hub"
+
+Always centered under ASCII logo
+
+Must NOT disappear on resize
+
+Safe wrapping, no overlap
+
+3️⃣ Todo Interaction (BUGFIX)
+
+Space OR Enter toggles completion
+
+Selected task visually distinct from completed tasks
+
+Keyboard-only
+
+Persist safely to todos.json
+
+Gracefully handle corrupted or missing data
+
+4️⃣ Reflection System (IMPORTANT)
+
+Rename section to Reflection
+
+REMOVE:
+
+religious
+
+motivational
+
+biased sources
+
+Use a neutral curated dataset:
+
+philosophy
+
+science
+
+builders
+
+artists
+
+anonymous reflections
+
+Rotate evenly
+
+Reflections must be:
+
+short
+
+calm
+
+non-preachy
+
+🌊 FLOW MODE — CORE FEATURE (DO NOT MESS THIS UP)
+
+Flow Mode is the emotional core of TermFlow.
+
+When Flow Mode is ACTIVE:
+
+ONLY show:
+
+Current intention
+
+Pomodoro timer
+
+One reflection
+
+(Optional) Focus Buddy
+
+Everything else:
+
+Hidden
+
+Read-only
+
+Dimmed
+
+Behavior:
+
+User enters ONE intention
+
+Pomodoro auto-starts
+
+Todo list becomes read-only
+
+ESC exits Flow Mode
+
+Dashboard fully restores on exit
+
+Keybindings:
+
+f → enter Flow Mode
+
+esc → exit Flow Mode
+
+p → pause / resume timer
+
+t → quick-add todo (ONLY outside Flow Mode)
+
+h or ? → Help
+
+i → Info
+
+⚠️ Flow Mode must be implemented using CSS class toggles, NOT widget duplication.
+
+🧍 FOCUS BUDDY (THIS IS WHAT WAS MISSING)
+
+The Focus Buddy MUST EXIST and MUST BE VISIBLE.
+
+Rules:
+
+NOT a chatbot
+
+NOT verbose
+
+NOT motivational spam
+
+Appears ONLY during Flow Mode
+
+Design:
+
+ASCII / character-based (anime-style allowed)
+
+Clearly a character, not a square or dot
+
+Subtle animation via frame cycling
+
+Slow, calming animation
+
+States:
+
+Flow start → "Begin."
+
+Mid-session → "Stay."
+
+Flow end → "Done."
+
+Layout OPTIONS (USER-SELECTABLE):
+
+User must be able to choose:
+
+Side Panel Mode
+
+Buddy takes left or right side
+
+Occupies a vertical strip
+
+Inline Mode
+
+Buddy stays within Flow Mode panel
+
+Does NOT resize dashboard
+
+Controls:
+
+b → toggle Focus Buddy ON/OFF
+
+Command Palette:
+
+Toggle Buddy
+
+Buddy Position: Left / Right / Inline
+
+Persistence:
+
+Buddy enabled state
+
+Buddy position
+
+Saved in config
+
+Restored on restart
+
+❗ ABSOLUTE TECH RULES
+
+DO NOT duplicate panels
+
+DO NOT recreate widgets on Flow Mode entry
+
+DO NOT remove existing keybindings
+
+DO NOT break Replit run command
+
+DO NOT change folder structure unnecessarily
+
+🧭 HELP & INFO SCREENS (FIX PROPERLY)
+Help Screen:
+
+Open via h or ?
+
+Proper wrapping
+
+Scrollable if needed
+
+Only actionable commands
+
+Info Screen:
+
+Must show:
+
+Project: TermFlow
+
+Made by: Axoninova community
+
+Founder: Atharv
+
+Invite: https://dsc.gg/axoninnova
+
+Short explanation of features
+
+🎨 UI POLISH (NO REDESIGN)
+
+Keep layout proportions
+
+Reduce border noise
+
+Highlight ONLY active panel
+
+Color hierarchy:
+
+Cyan → time
+
+Green → actions
+
+Yellow → context
+
+Dim gray → background
+
+📦 PACKAGING STATUS
+
+Do NOT deploy
+
+Prepare for pip if safe
+
+If unsafe, add TODO comments only
+
+✅ FINAL OUTPUT REQUIREMENTS
+
+After implementation:
+
+Briefly list what was fixed
+
+Explain Flow Mode in exactly 3 bullet points
+
+State pip status as:
+
+READY or PREPARED
+
+⚠️ Do not claim features unless they are actually implemented and visible.

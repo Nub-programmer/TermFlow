@@ -29,6 +29,14 @@ class TodoPanel(Static):
         yield ListView(id="todo-list")
         yield Label("Enter: Add | Space: Toggle | Del: Remove", classes="help-text")
 
+    def focus_input(self) -> None:
+        """Focus the input field for adding new tasks."""
+        try:
+            input_widget = self.query_one("#todo-input")
+            input_widget.focus()
+        except:
+            pass
+
     def on_mount(self) -> None:
         self.refresh_todos()
 
