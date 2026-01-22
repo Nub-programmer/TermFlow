@@ -15,16 +15,15 @@ from termflow.termflow.utils.storage import load_config, save_config
 class TermFlowCommandProvider(Provider):
     async def search(self, query: str) -> Hits:
         matcher = self.matcher(query)
+        app = self.app
         commands = [
-            ("Toggle Focus Buddy", self.app.action_toggle_buddy, "Show/Hide focus buddy"),
-            ("Buddy: Position Left", self.app.action_set_buddy_left, "Place buddy on left"),
-            ("Buddy: Position Right", self.app.action_set_buddy_right, "Place buddy on right"),
-            ("Buddy: Position Inline", self.app.action_set_buddy_inline, "Place buddy inline"),
-            ("Buddy: Human", lambda: self.app.set_buddy_type("human"), "Use human buddy"),
-            ("Buddy: Cat", lambda: self.app.set_buddy_type("cat"), "Use cat buddy"),
-            ("Buddy: Dog", lambda: self.app.set_buddy_type("dog"), "Use dog buddy"),
-            ("Theme: Default", lambda: setattr(self.app, "theme", "builtin:dark"), "Switch to dark theme"),
-            ("Theme: Light", lambda: setattr(self.app, "theme", "builtin:light"), "Switch to light theme"),
+            ("Toggle Focus Buddy", app.action_toggle_buddy, "Show/Hide focus buddy"),
+            ("Buddy: Position Left", app.action_set_buddy_left, "Place buddy on left"),
+            ("Buddy: Position Right", app.action_set_buddy_right, "Place buddy on right"),
+            ("Buddy: Position Inline", app.action_set_buddy_inline, "Place buddy inline"),
+            ("Buddy: Human", lambda: app.set_buddy_type("human"), "Use human buddy"),
+            ("Buddy: Cat", lambda: app.set_buddy_type("cat"), "Use cat buddy"),
+            ("Buddy: Dog", lambda: app.set_buddy_type("dog"), "Use dog buddy"),
         ]
         for name, callback, help_text in commands:
             score = matcher.match(name)
@@ -49,7 +48,7 @@ class HelpScreen(ModalScreen):
         Binding("h", "dismiss", "Close"),
     ]
     def compose(self) -> ComposeResult:
-        with VerticalScroll(id="help-scroll", classes="modal-panel"):
+        with VerticalScroll(classes="modal-panel"):
             yield Static("""
 [bold underline]TermFlow Keybindings[/]
 
@@ -73,7 +72,7 @@ class InfoScreen(ModalScreen):
         Binding("i", "dismiss", "Close"),
     ]
     def compose(self) -> ComposeResult:
-        with VerticalScroll(id="info-scroll", classes="modal-panel"):
+        with VerticalScroll(classes="modal-panel"):
             yield Static("""
 [bold]TermFlow[/]
 Project: TermFlow
@@ -116,10 +115,8 @@ class TermFlowApp(App):
     def action_exit_flow_safe(self) -> None:
         if self.flow_state == "DEEP":
             self.action_exit_flow()
-        else:
-            # Check if there are active screens to pop
-            if len(self.screen_stack) > 1:
-                self.pop_screen()
+        elif len(self.screen_stack) > 1:
+            self.pop_screen()
 
     def action_toggle_buddy(self) -> None:
         self.buddy_enabled = not self.buddy_enabled
