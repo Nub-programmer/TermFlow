@@ -42,8 +42,8 @@ Grid {
 }
 
 #focus-buddy {
-    width: 30;
-    height: 12;
+    width: 45;
+    height: 18;
     border: thick $warning;
     content-align: center middle;
     padding: 1;

@@ -12,25 +12,122 @@ from termflow.termflow.panels.pomodoro import PomodoroPanel
 from termflow.termflow.panels.info import InfoPanel
 from termflow.termflow.utils.storage import load_config, save_config
 
+# Cat Buddy Frames - Using single triple quotes to avoid confusion with double quotes in art
+CAT_IDLE_A = r'''
+         _     _
+        /\`-"-`/\
+        )` _ _ `(
+    (`\ |=  Y  =|
+     ) )_\  ^  /_
+    ( (/ ;`-u-`; \
+     \| /       \ |
+      \ \_ \ / _/ /
+ jgs  (,(,,)~(,,),)
+'''
+
+CAT_IDLE_B = r'''
+         _     _
+        /\`-"-`/\
+        )` _ _ `(
+       {=   Y   =}
+        \   ^   /
+       /`;'-u-';`\
+      | /       \ |
+     /\ ;__\ / _/ /
+ jgs \___, )~(,,),)
+        (_(
+'''
+
+CAT_STAND = r'''
+                      ,
+                    _/((
+           _.---. .'   `\
+         .'      `     ^ T=
+        /     \       .--'
+       |      /       )'-.
+       ; ,   <__..-(   '-.)
+        \ \-.__)    ``--._)
+     jgs '.'-.__.-.
+           '-...-'
+'''
+
+CAT_WALK_A = r'''
+        _
+       //
+      ||              |\_/|
+       \\  .-""""-._,' e e(
+        \\/         \  =_Y/=
+         \    \       /`"`
+          \   | /    |
+          /  / -\   /
+          `\ \\  | ||
+       jgs  \_)) |_))
+'''
+
+CAT_WALK_B = r'''
+           _ 
+          ((
+           \\
+            ))       
+           //.--.     |\_/|
+          |      `'..' a a(
+           \  \      \ =_Y/=
+           /   |   /  /`"`
+           > /` --< <<
+      jgs  \__))   \_))
+'''
+
+CAT_PLAY_A = r'''
+                      __     __,
+                      \,`~"~` /
+      .-=-.           /    . .\
+     / .-. \          {  =    Y}=
+    (_/   \ \          \      / 
+           \ \        _/`'`'`b
+            \ `.__.-'`        \-._
+             |            '.__ `'-;_
+             |            _.' `'-.__)
+              \    ;_..--'/     //  \
+              |   /  /   |     //    |
+        jgs   \  \ \__)   \   //    /
+               \__)        './/   .'
+                             `'-'`
+'''
+
+CAT_PLAY_B = r'''
+                   .-o=o-.
+               ,  /=o=o=o=\ .--.
+              _|\|=o=O=o=O=|    \
+          __.'  a`\=o=o=o=(`\   /
+          '.   a 4/`|.-""'`\ \ ;'`)   .---.
+            \   .'  /   .--'  |_.'   / .-._)
+             `)  _.'   /     /`-.__.' /
+          jgs `'-.____;     /'-.___.-'
+                       `"""`
+'''
+
 class TermFlowCommandProvider(Provider):
     async def search(self, query: str) -> Hits:
         matcher = self.matcher(query)
         app = self.app
         commands = [
             ("Toggle Focus Buddy", app.action_toggle_buddy, "Show/Hide focus buddy"),
+            ("Toggle Buddy Motion", app.action_toggle_buddy_motion, "Enable/Disable buddy animation"),
             ("Buddy: Position Left", app.action_set_buddy_left, "Place buddy on left"),
             ("Buddy: Position Right", app.action_set_buddy_right, "Place buddy on right"),
             ("Buddy: Position Inline", app.action_set_buddy_inline, "Place buddy inline"),
-            ("Buddy: Human", lambda: app.set_buddy_type("human"), "Use human buddy"),
-            ("Buddy: Cat", lambda: app.set_buddy_type("cat"), "Use cat buddy"),
-            ("Buddy: Dog", lambda: app.set_buddy_type("dog"), "Use dog buddy"),
+            ("Toggle Pomodoro", app.action_toggle_pomo_visibility, "Show/Hide Pomodoro"),
+            ("Toggle Reflection", app.action_toggle_reflection_visibility, "Show/Hide Reflection"),
+            ("Theme: Default", lambda: setattr(app, "theme", "builtin:dark"), "Switch to dark theme"),
+            ("Theme: Light", lambda: setattr(app, "theme", "builtin:light"), "Switch to light theme"),
+            ("Quit", app.action_quit, "Exit TermFlow"),
         ]
         for name, callback, help_text in commands:
             score = matcher.match(name)
             if score > 0:
                 yield Hit(score, matcher.highlight(name), callback, help=help_text)
 
-ASCII_LOGO = """
+ASCII_LOGO = r'''
  [bold blue]
   _____                   ______ _                 
  |_   _|                 |  ____| |                
@@ -40,13 +137,10 @@ ASCII_LOGO = """
    \_/\___|_|  |_| |_| |_|_|    |_|\___/ \_/\_/   
  [/]
 [italic dim]your minimalist terminal productivity hub[/]
-"""
+'''
 
 class HelpScreen(ModalScreen):
-    BINDINGS = [
-        Binding("escape", "dismiss", "Close"),
-        Binding("h", "dismiss", "Close"),
-    ]
+    BINDINGS = [Binding("escape", "dismiss", "Close"), Binding("h", "dismiss", "Close")]
     def compose(self) -> ComposeResult:
         with VerticalScroll(classes="modal-panel"):
             yield Static("""
@@ -67,10 +161,7 @@ class HelpScreen(ModalScreen):
         """)
 
 class InfoScreen(ModalScreen):
-    BINDINGS = [
-        Binding("escape", "dismiss", "Close"),
-        Binding("i", "dismiss", "Close"),
-    ]
+    BINDINGS = [Binding("escape", "dismiss", "Close"), Binding("i", "dismiss", "Close")]
     def compose(self) -> ComposeResult:
         with VerticalScroll(classes="modal-panel"):
             yield Static("""
@@ -103,25 +194,67 @@ class TermFlowApp(App):
     flow_state = reactive("IDLE")
     intention = reactive("")
     buddy_enabled = reactive(False)
+    buddy_motion = reactive(True)
     buddy_state = reactive("IDLE")
+    buddy_frame = reactive(0)
     buddy_position = reactive("left")
+    pomo_visible = reactive(True)
+    reflection_visible = reactive(True)
 
     def on_mount(self) -> None:
         config = load_config()
         if not isinstance(config, dict): config = {}
         self.buddy_enabled = config.get("buddy_enabled", False)
+        self.buddy_motion = config.get("buddy_motion", True)
         self.buddy_position = config.get("buddy_position", "left")
+        self.pomo_visible = config.get("pomo_visible", True)
+        self.reflection_visible = config.get("reflection_visible", True)
+        self.set_interval(2.5, self.tick_buddy)
+
+    def tick_buddy(self) -> None:
+        if self.flow_state == "DEEP" and self.buddy_enabled:
+            if self.buddy_motion:
+                self.buddy_frame = (self.buddy_frame + 1) % 10
+                if self.buddy_frame < 2:
+                    self.buddy_state = "IDLE"
+                elif self.buddy_frame == 2: self.buddy_state = "STAND"
+                elif self.buddy_frame in [3,4]: self.buddy_state = "WALK"
+                elif self.buddy_frame in [5,6]: self.buddy_state = "PLAY_A"
+                elif self.buddy_frame in [7,8]: self.buddy_state = "PLAY_B"
+                else: self.buddy_state = "IDLE"
+            else:
+                self.buddy_state = "IDLE"
+                self.buddy_frame = 0
+            self.update_buddy_art()
+
+    def update_buddy_art(self) -> None:
+        if self.flow_state != "DEEP" or not self.buddy_enabled: return
+        try:
+            buddy_widget = self.query_one("#focus-buddy", Static)
+            frames = {
+                "IDLE": CAT_IDLE_A if self.buddy_frame % 2 == 0 else CAT_IDLE_B,
+                "STAND": CAT_STAND,
+                "WALK": CAT_WALK_A if self.buddy_frame == 3 else CAT_WALK_B,
+                "PLAY_A": CAT_PLAY_A,
+                "PLAY_B": CAT_PLAY_B
+            }
+            art = frames.get(self.buddy_state, CAT_IDLE_A)
+            status_text = " [italic]Begin.[/]" if self.buddy_frame == 0 else " [italic]Focus.[/]" if self.buddy_frame > 0 else ""
+            buddy_widget.update(Art(art + status_text))
+        except: pass
 
     def action_exit_flow_safe(self) -> None:
-        if self.flow_state == "DEEP":
-            self.action_exit_flow()
-        elif len(self.screen_stack) > 1:
-            self.pop_screen()
+        if self.flow_state == "DEEP": self.action_exit_flow()
+        elif len(self.screen_stack) > 1: self.pop_screen()
 
     def action_toggle_buddy(self) -> None:
         self.buddy_enabled = not self.buddy_enabled
         self.save_current_config()
         self.update_buddy_layout()
+
+    def action_toggle_buddy_motion(self) -> None:
+        self.buddy_motion = not self.buddy_motion
+        self.save_current_config()
 
     def action_set_buddy_left(self) -> None:
         self.buddy_position = "left"
@@ -138,11 +271,26 @@ class TermFlowApp(App):
         self.save_current_config()
         self.update_buddy_layout()
 
+    def action_toggle_pomo_visibility(self) -> None:
+        self.pomo_visible = not self.pomo_visible
+        self.save_current_config()
+        self.query_one("#pomodoro").set_class(not self.pomo_visible, "hidden")
+
+    def action_toggle_reflection_visibility(self) -> None:
+        self.reflection_visible = not self.reflection_visible
+        self.save_current_config()
+        self.query_one("#info").set_class(not self.reflection_visible, "hidden")
+
     def save_current_config(self) -> None:
         config = load_config()
         if not isinstance(config, dict): config = {}
-        config["buddy_enabled"] = self.buddy_enabled
-        config["buddy_position"] = self.buddy_position
+        config.update({
+            "buddy_enabled": self.buddy_enabled,
+            "buddy_motion": self.buddy_motion,
+            "buddy_position": self.buddy_position,
+            "pomo_visible": self.pomo_visible,
+            "reflection_visible": self.reflection_visible
+        })
         save_config(config)
 
     def update_buddy_layout(self) -> None:
@@ -153,7 +301,7 @@ class TermFlowApp(App):
             if self.buddy_enabled:
                 container.add_class(f"pos-{self.buddy_position}")
                 buddy_widget.remove_class("hidden")
-                self.watch_buddy_state(self.buddy_state)
+                self.update_buddy_art()
             else:
                 buddy_widget.add_class("hidden")
 
@@ -190,38 +338,6 @@ class TermFlowApp(App):
         else:
             dashboard.remove_class("hidden")
             flow_view.add_class("hidden")
-
-    def watch_buddy_state(self, state: str) -> None:
-        if not self.buddy_enabled or self.flow_state != "DEEP": return
-        buddy_widget = self.query_one("#focus-buddy", Static)
-        BUDDY_TYPES = {
-            "human": {
-                "IDLE": "  (｡•̀ᴗ-)✧  \n   /|\\   \n   / \\   \n [Begin]",
-                "FOCUS": "  ( •̀ ω •́ ) \n   \\O/   \n    |    \n [Focus]",
-                "REST": "  (￣o￣)zz \n   -|-   \n   / \\   \n [Done]"
-            },
-            "cat": {
-                "IDLE": " ／l、\n（ﾟ､ ｡ ７\nl、 ~ヽ\nじしf_, )ノ\n [Meow]",
-                "FOCUS": " ／l、\n（o ω o ７\nl、 ~ヽ\nじしf_, )ノ\n [Focus]",
-                "REST": " ／l、\n（u _ u ７\nl、 ~ヽ\nじしf_, )ノ\n [Zzz]"
-            },
-            "dog": {
-                "IDLE": "  __      _ \n o'')}____// \n  `_/      ) \n  (_(_/-(_/  \n [Woof]",
-                "FOCUS": "  __      _ \n O'')}____// \n  `_/      ) \n  (_(_/-(_/  \n [Focus]",
-                "REST": "  __      _ \n -'')}____// \n  `_/      ) \n  (_(_/-(_/  \n [Done]"
-            }
-        }
-        config = load_config()
-        b_type = str(config.get("buddy_type", "human")) if isinstance(config, dict) else "human"
-        art = BUDDY_TYPES.get(b_type, BUDDY_TYPES["human"]).get(state, "[Buddy]")
-        buddy_widget.update(Art(art))
-
-    def set_buddy_type(self, b_type: str) -> None:
-        config = load_config()
-        if not isinstance(config, dict): config = {}
-        config["buddy_type"] = b_type
-        save_config(config)
-        self.watch_buddy_state(self.buddy_state)
 
     def action_command_palette(self) -> None:
         from textual.command import CommandPalette

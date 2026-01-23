@@ -1,4 +1,4 @@
 pomodoro_duration = 25
-pomodoro_sessions_completed = 0
+pomodoro_sessions_completed = 5
 buddy_enabled = true
 buddy_position = "left"
