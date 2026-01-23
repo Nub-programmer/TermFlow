@@ -20,20 +20,12 @@ Grid {
     row-span: 3;
     border: double $accent;
     padding: 1;
-    min-height: 15;
 }
 
 #clock, #pomodoro, #info {
     border: round $primary;
     padding: 1;
     content-align: center middle;
-    min-height: 8;
-}
-
-#timer {
-    text-style: bold;
-    margin: 1;
-    color: $warning;
 }
 
 #flow-container {
@@ -47,20 +39,26 @@ Grid {
     border: thick $warning;
     content-align: center middle;
     padding: 1;
-    margin: 1;
 }
 
 #flow-content {
     width: 1fr;
     content-align: center middle;
+    padding: 2;
 }
 
-#flow-intention {
+#flow-task {
     width: 100%;
     text-align: center;
     padding: 1;
     border: double $accent;
-    margin-bottom: 1;
+    margin: 1 0;
+}
+
+#flow-pomo, #flow-reflection {
+    width: 100%;
+    border: round $primary;
+    margin: 1 0;
 }
 
 .pos-left #focus-buddy { dock: left; }
@@ -69,7 +67,7 @@ Grid {
     width: 100%;
     height: auto;
     border: none;
-    margin-top: 2;
+    margin: 1 0;
 }
 
 .modal-panel {
@@ -77,12 +75,8 @@ Grid {
     border: double $primary;
     padding: 2 4;
     margin: 4 8;
-    height: 100%;
-    width: 100%;
+    height: auto;
+    width: auto;
     max-width: 80;
     content-align: center middle;
-}
-
-.modal-panel Static {
-    width: 100%;
 }
