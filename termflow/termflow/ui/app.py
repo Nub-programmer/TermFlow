@@ -1,5 +1,5 @@
 from textual.app import App, ComposeResult
-from textual.widgets import Header, Footer, Static, ListItem, ListView
+from textual.widgets import Header, Footer, Static
 from textual.containers import Grid, VerticalScroll, Horizontal, Container
 from textual.binding import Binding
 from textual.screen import ModalScreen
@@ -124,19 +124,20 @@ class FlowModeProvider(Provider):
         if app.flow_state != "DEEP": return
         matcher = self.matcher(query)
         commands = [
-            ("Flow: Pomodoro ON/OFF", app.action_toggle_pomo_visibility, "Toggle timer visibility"),
-            ("Flow: Reflection ON/OFF", app.action_toggle_reflection_visibility, "Toggle reflection visibility"),
-            ("Flow: Focus Buddy ON/OFF", app.action_toggle_buddy, "Toggle buddy visibility"),
-            ("Buddy: Motion ON/OFF", app.action_toggle_buddy_motion, "Toggle animation sequence"),
-            ("Buddy: Motion Mode (Idle/Full)", app.action_toggle_buddy_anim_mode, "Toggle motion intensity"),
-            ("Buddy: Pos Left", app.action_set_buddy_left, "Dock left"),
-            ("Buddy: Pos Right", app.action_set_buddy_right, "Dock right"),
-            ("Buddy: Pos Inline", app.action_set_buddy_inline, "Dock inline"),
+            ("Flow Mode: Toggle Pomodoro", app.action_toggle_pomo_visibility, "ON/OFF timer visibility"),
+            ("Flow Mode: Toggle Reflection", app.action_toggle_reflection_visibility, "ON/OFF reflection visibility"),
+            ("Flow Mode: Toggle Focus Buddy", app.action_toggle_buddy, "ON/OFF buddy visibility"),
+            ("Flow Mode: Toggle Buddy Motion", app.action_toggle_buddy_motion, "ON/OFF animation sequence"),
+            ("Flow Mode: Buddy Motion Mode", app.action_toggle_buddy_anim_mode, "Switch between Idle/Full"),
+            ("Flow Mode: Buddy Pos Left", app.action_set_buddy_left, "Dock buddy left"),
+            ("Flow Mode: Buddy Pos Right", app.action_set_buddy_right, "Dock buddy right"),
+            ("Flow Mode: Buddy Pos Inline", app.action_set_buddy_inline, "Dock buddy inline"),
         ]
         for name, callback, help_text in commands:
             score = matcher.match(name)
-            if score > 0:
-                yield Hit(score, matcher.highlight(name), callback, help=help_text)
+            # If no query, show all flow commands at top
+            if not query or score > 0:
+                yield Hit(score or 1, matcher.highlight(name) if query else name, callback, help=help_text)
 
 class GeneralProvider(Provider):
     async def search(self, query: str) -> Hits:
@@ -151,8 +152,8 @@ class GeneralProvider(Provider):
         ]
         for name, callback, help_text in commands:
             score = matcher.match(name)
-            if score > 0:
-                yield Hit(score, matcher.highlight(name), callback, help=help_text)
+            if not query or score > 0:
+                yield Hit(score or 1, matcher.highlight(name) if query else name, callback, help=help_text)
 
 class HelpScreen(ModalScreen):
     BINDINGS = [Binding("escape", "dismiss", "Close"), Binding("h", "dismiss", "Close")]
