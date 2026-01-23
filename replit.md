@@ -4,6 +4,17 @@
 
 TermFlow is a minimalist terminal productivity dashboard built with Python and the Textual TUI framework. It provides a keyboard-driven interface combining productivity tools: a real-time clock, todo list with colored tags, Pomodoro timer with session tracking, live weather updates, and motivational quotes. The application runs entirely in the terminal, offering a distraction-free productivity environment.
 
+## Recent Changes (Jan 2026)
+
+- Reorganized project files to root directory for easier deployment
+- Fixed Command Palette stability (focus, desync issues)
+- Added Flow Mode Interface section to Command Palette with toggles:
+  - Pomodoro ON/OFF, Reflection ON/OFF, Focus Buddy ON/OFF
+  - Buddy sub-options (Motion, Animation Mode, Position) only visible when Buddy is ON
+- Improved ESC key handling (works globally in all modes)
+- Added buddy positioning options (Left, Right, Inline)
+- Prepared for pip packaging (internal only)
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
