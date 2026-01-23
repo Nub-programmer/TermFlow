@@ -1,0 +1,192 @@
+READ CAREFULLY. FOLLOW EXACTLY. DO NOT BREAK EXISTING FUNCTIONALITY.
+
+You are continuing work on TermFlow, a production-grade, terminal-first deep focus system.
+This is an incremental stability + configurability update, NOT a redesign.
+
+Everything that currently works must keep working exactly as-is.
+
+🚨 GLOBAL RULES (NON-NEGOTIABLE)
+
+Do NOT remove existing commands
+
+Do NOT rename existing commands
+
+Do NOT break or simplify the Command Palette (:)
+
+Do NOT revert Flow Mode behavior
+
+Do NOT replace ASCII art with icons or symbols
+
+Keyboard-first only
+
+ESC must always work globally
+
+All animations must be optional & user-controlled
+
+If unsure, choose the least destructive, most additive approach
+
+🧭 COMMAND PALETTE — STABILITY FIX (CRITICAL)
+❗ Problems to fix
+
+Command palette sometimes glitches or loses focus after mode changes
+
+Palette sometimes requires search even when users don’t know what to search
+
+Palette may desync after entering/exiting Flow Mode
+
+✅ Required behavior
+
+The Command Palette (:) must:
+
+Never go empty
+
+Never lose focus
+
+Never glitch after Flow Mode enter/exit
+
+Reset cleanly on close
+
+Work identically in normal mode and Flow Mode
+
+Display commands in visible sections, not search-only
+
+No redesign. Fix logic only.
+
+🧩 NEW PALETTE SECTION: Flow Mode Interface
+Visibility rules
+
+Appears ONLY when Flow Mode is active
+
+Appears automatically when opening : with empty search
+
+Listed alongside existing sections (Keys, Theme, Screenshot, Quit)
+
+Does NOT replace or hide any existing section
+
+Options inside Flow Mode Interface
+
+Each option must be:
+
+Keyboard selectable
+
+Clickable
+
+Instantly applied
+
+Persistent across sessions
+
+Core toggles
+
+Pomodoro → ON / OFF
+
+Reflection → ON / OFF
+
+Focus Buddy → ON / OFF
+
+Focus Buddy sub-options
+
+(Visible ONLY if Focus Buddy = ON)
+
+Focus Buddy Motion → ON / OFF
+
+Focus Buddy Position:
+
+Left split
+
+Right split
+
+Inline (uses empty terminal space only)
+
+Focus Buddy Animation Mode:
+
+Idle only
+
+Idle + Active Motion
+
+No option should require search to discover.
+
+🎯 FLOW MODE — UI COMPLETION (DO NOT REDESIGN)
+
+Flow Mode must continue to behave exactly as follows:
+
+Activated with f
+
+Pomodoro auto-starts (if enabled)
+
+Single-task panel:
+
+Shows ONLY one task
+
+Task list is read-only
+
+When task is marked done → next task appears automatically
+
+Reflection panel shown ONLY if enabled
+
+Bottom buttons must work consistently in Flow Mode
+(no dead clicks, no state desync)
+
+🧍 FLOW BUDDY — BEHAVIOR (NO EXPANSION)
+
+Do NOT add new art. Do NOT change existing frames.
+
+Allowed behavior ONLY:
+
+Idle animation
+
+Uses Idle Frame A + B
+
+Alternates slowly (tail movement)
+
+Only when Buddy = ON
+
+Only when Motion = ON
+
+Active motion
+
+Plays ONLY if user explicitly selects:
+“Idle + Active Motion”
+
+Otherwise remains idle-only
+
+❌ Do NOT autoplay walking/playing
+❌ Do NOT force motion
+❌ Do NOT show buddy outside Flow Mode
+
+🧠 UX PRINCIPLE (IMPORTANT)
+
+Users must be able to:
+
+Discover Flow Mode settings without knowing search terms
+
+Configure Flow Mode visually from the Command Palette
+
+Trust that toggling options will not break anything
+
+This is a mindset tool, not a toy.
+
+📦 SAFETY & STABILITY
+
+Do NOT move files
+
+Do NOT rename entry points
+
+Do NOT break Replit compatibility
+
+Keep current layout & proportions
+
+Prepare internally for pip packaging (do NOT activate)
+
+✅ FINAL RESPONSE FORMAT (MANDATORY)
+
+After implementation, respond with:
+
+Exact bugs fixed
+
+Flow Mode summary (EXACTLY 3 bullet points)
+
+Command palette improvements summary
+
+Flow Buddy control summary
+
+Pip status: PREPARED
