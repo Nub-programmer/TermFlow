@@ -79,8 +79,54 @@ Grid {
 #focus-buddy {
     text-align: center;
     color: $yellow;
-    height: 10;
+    height: 12;
+    width: 30;
+    min-width: 25;
+}
+
+#flow-container {
     width: 100%;
+    height: 100%;
+}
+
+#flow-container.pos-left {
+    layout: horizontal;
+}
+
+#flow-container.pos-left #focus-buddy {
+    dock: left;
+}
+
+#flow-container.pos-right {
+    layout: horizontal;
+}
+
+#flow-container.pos-right #focus-buddy {
+    dock: right;
+}
+
+#flow-container.pos-inline #focus-buddy {
+    dock: bottom;
+    height: auto;
+    width: 100%;
+}
+
+#flow-content {
+    width: 1fr;
+    height: 100%;
+}
+
+#flow-task {
+    text-align: center;
+    padding: 1;
+    margin: 1;
+    border: round $primary;
+}
+
+#flow-pomo, #flow-reflection {
+    border: round $primary;
+    padding: 1;
+    margin: 1;
 }
 
 .state-deep #main-scroll {

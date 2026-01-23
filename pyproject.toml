@@ -17,7 +17,7 @@ dependencies = [
 ]
 
 [project.scripts]
-termflow = "termflow.ui.app:main"
+termflow = "termflow.termflow.ui.app:main"
 
 [build-system]
 requires = ["setuptools>=61.0"]

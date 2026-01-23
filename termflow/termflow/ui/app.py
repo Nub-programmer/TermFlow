@@ -12,7 +12,6 @@ from termflow.termflow.panels.pomodoro import PomodoroPanel
 from termflow.termflow.panels.info import InfoPanel
 from termflow.termflow.utils.storage import load_config, save_config, load_todos, save_todos
 
-# Cat Buddy Frames
 CAT_IDLE_A = r'''
          _     _
         /\`-"-`/\
@@ -118,45 +117,81 @@ ASCII_LOGO = r'''
 [italic dim]your minimalist terminal productivity hub[/]
 '''
 
+
 class FlowModeProvider(Provider):
+    """Provides Flow Mode commands only when Flow Mode is active."""
+    
+    @property
+    def _app(self):
+        return self.app
+    
     async def search(self, query: str) -> Hits:
-        app = self.app
-        if app.flow_state != "DEEP": return
+        app = self._app
+        if not hasattr(app, 'flow_state') or app.flow_state != "DEEP":
+            return
+        
         matcher = self.matcher(query)
+        
+        pomo_status = "ON" if getattr(app, 'pomo_visible', True) else "OFF"
+        reflection_status = "ON" if getattr(app, 'reflection_visible', True) else "OFF"
+        buddy_status = "ON" if getattr(app, 'buddy_enabled', False) else "OFF"
+        motion_status = "ON" if getattr(app, 'buddy_motion', True) else "OFF"
+        anim_mode = getattr(app, 'buddy_anim_mode', 'IDLE_ACTIVE')
+        anim_status = "Idle + Active" if anim_mode == "IDLE_ACTIVE" else "Idle Only"
+        buddy_pos = getattr(app, 'buddy_position', 'left').title()
+        
         commands = [
-            ("Flow Mode: Toggle Pomodoro", app.action_toggle_pomo_visibility, "ON/OFF timer visibility"),
-            ("Flow Mode: Toggle Reflection", app.action_toggle_reflection_visibility, "ON/OFF reflection visibility"),
-            ("Flow Mode: Toggle Focus Buddy", app.action_toggle_buddy, "ON/OFF buddy visibility"),
-            ("Flow Mode: Toggle Buddy Motion", app.action_toggle_buddy_motion, "ON/OFF animation sequence"),
-            ("Flow Mode: Buddy Motion Mode", app.action_toggle_buddy_anim_mode, "Switch between Idle/Full"),
-            ("Flow Mode: Buddy Pos Left", app.action_set_buddy_left, "Dock buddy left"),
-            ("Flow Mode: Buddy Pos Right", app.action_set_buddy_right, "Dock buddy right"),
-            ("Flow Mode: Buddy Pos Inline", app.action_set_buddy_inline, "Dock buddy inline"),
+            (f"Flow Mode: Pomodoro [{pomo_status}]", app.action_toggle_pomo_visibility, "Toggle timer visibility"),
+            (f"Flow Mode: Reflection [{reflection_status}]", app.action_toggle_reflection_visibility, "Toggle reflection panel"),
+            (f"Flow Mode: Focus Buddy [{buddy_status}]", app.action_toggle_buddy, "Toggle buddy companion"),
         ]
+        
+        if getattr(app, 'buddy_enabled', False):
+            commands.extend([
+                (f"  Buddy Motion [{motion_status}]", app.action_toggle_buddy_motion, "Toggle animation"),
+                (f"  Buddy Animation Mode [{anim_status}]", app.action_toggle_buddy_anim_mode, "Switch Idle/Full"),
+                (f"  Buddy Position: Left", app.action_set_buddy_left, "Dock left"),
+                (f"  Buddy Position: Right", app.action_set_buddy_right, "Dock right"),
+                (f"  Buddy Position: Inline", app.action_set_buddy_inline, "Use empty space"),
+            ])
+        
         for name, callback, help_text in commands:
             score = matcher.match(name)
-            # If no query, show all flow commands at top
             if not query or score > 0:
-                yield Hit(score or 1, matcher.highlight(name) if query else name, callback, help=help_text)
+                yield Hit(score if score > 0 else 100, matcher.highlight(name) if query else name, callback, help=help_text)
+
 
 class GeneralProvider(Provider):
+    """Provides general commands available in all modes."""
+    
+    @property
+    def _app(self):
+        return self.app
+    
     async def search(self, query: str) -> Hits:
         matcher = self.matcher(query)
-        app = self.app
+        app = self._app
+        
+        def set_dark(): app.theme = "builtin:dark"
+        def set_light(): app.theme = "builtin:light"
+        
         commands = [
-            ("Theme: Default", lambda: setattr(app, "theme", "builtin:dark"), "Switch to dark"),
-            ("Theme: Light", lambda: setattr(app, "theme", "builtin:light"), "Switch to light"),
-            ("Keys: Show Help", app.action_toggle_help, "Keyboard reference"),
-            ("Info: About", app.action_toggle_info, "App information"),
-            ("Quit", app.action_quit, "Exit TermFlow"),
+            ("Theme: Dark Mode", set_dark, "Switch to dark theme"),
+            ("Theme: Light Mode", set_light, "Switch to light theme"),
+            ("Keys: Show Help", app.action_toggle_help, "View keyboard shortcuts"),
+            ("Info: About TermFlow", app.action_toggle_info, "App information"),
+            ("Quit Application", app.action_quit, "Exit TermFlow"),
         ]
+        
         for name, callback, help_text in commands:
             score = matcher.match(name)
             if not query or score > 0:
-                yield Hit(score or 1, matcher.highlight(name) if query else name, callback, help=help_text)
+                yield Hit(score if score > 0 else 50, matcher.highlight(name) if query else name, callback, help=help_text)
+
 
 class HelpScreen(ModalScreen):
     BINDINGS = [Binding("escape", "dismiss", "Close"), Binding("h", "dismiss", "Close")]
+    
     def compose(self) -> ComposeResult:
         with VerticalScroll(classes="modal-panel"):
             yield Static("""
@@ -176,8 +211,10 @@ class HelpScreen(ModalScreen):
 [bold]Del[/]   - Remove Todo item
         """)
 
+
 class InfoScreen(ModalScreen):
     BINDINGS = [Binding("escape", "dismiss", "Close"), Binding("i", "dismiss", "Close")]
+    
     def compose(self) -> ComposeResult:
         with VerticalScroll(classes="modal-panel"):
             yield Static("""
@@ -192,18 +229,19 @@ to reduce cognitive load and
 enable deep work.
         """)
 
+
 class TermFlowApp(App):
     CSS_PATH = "styles.tcss"
     COMMANDS = App.COMMANDS | {FlowModeProvider, GeneralProvider}
     BINDINGS = [
         Binding("f", "enter_flow", "Flow", show=True),
-        Binding("escape", "exit_flow_safe", "Exit", show=False),
+        Binding("escape", "escape_handler", "Exit", show=False, priority=True),
         Binding("p", "pause_timer", "Pause", show=True),
         Binding("t", "add_todo", "Add", show=True),
         Binding("h,question_mark", "toggle_help", "Help", show=True),
         Binding("i", "toggle_info", "Info", show=True),
         Binding("q", "quit", "Quit", show=True),
-        Binding("colon", "command_palette", "Command Palette", show=False),
+        Binding("colon", "open_command_palette", "Command Palette", show=False),
         Binding("b", "toggle_buddy", "Toggle Buddy", show=True),
     ]
 
@@ -211,13 +249,14 @@ class TermFlowApp(App):
     intention = reactive("")
     buddy_enabled = reactive(False)
     buddy_motion = reactive(True)
-    buddy_anim_mode = reactive("IDLE_ACTIVE") # "IDLE_ONLY" or "IDLE_ACTIVE"
+    buddy_anim_mode = reactive("IDLE_ACTIVE")
     buddy_state = reactive("IDLE")
     buddy_frame = reactive(0)
     buddy_position = reactive("left")
     pomo_visible = reactive(True)
     reflection_visible = reactive(True)
     current_task = reactive(None)
+    _palette_open = reactive(False)
 
     def on_mount(self) -> None:
         config = load_config()
@@ -237,19 +276,26 @@ class TermFlowApp(App):
                     self.buddy_state = "IDLE"
                 else:
                     self.buddy_frame = (self.buddy_frame + 1) % 10
-                    if self.buddy_frame < 2: self.buddy_state = "IDLE"
-                    elif self.buddy_frame == 2: self.buddy_state = "STAND"
-                    elif self.buddy_frame in [3,4]: self.buddy_state = "WALK"
-                    elif self.buddy_frame in [5,6]: self.buddy_state = "PLAY_A"
-                    elif self.buddy_frame in [7,8]: self.buddy_state = "PLAY_B"
-                    else: self.buddy_state = "IDLE"
+                    if self.buddy_frame < 2:
+                        self.buddy_state = "IDLE"
+                    elif self.buddy_frame == 2:
+                        self.buddy_state = "STAND"
+                    elif self.buddy_frame in [3, 4]:
+                        self.buddy_state = "WALK"
+                    elif self.buddy_frame in [5, 6]:
+                        self.buddy_state = "PLAY_A"
+                    elif self.buddy_frame in [7, 8]:
+                        self.buddy_state = "PLAY_B"
+                    else:
+                        self.buddy_state = "IDLE"
             else:
                 self.buddy_state = "IDLE"
                 self.buddy_frame = 0
             self.update_buddy_art()
 
     def update_buddy_art(self) -> None:
-        if self.flow_state != "DEEP" or not self.buddy_enabled: return
+        if self.flow_state != "DEEP" or not self.buddy_enabled:
+            return
         try:
             buddy_widget = self.query_one("#focus-buddy", Static)
             frames = {
@@ -260,13 +306,17 @@ class TermFlowApp(App):
                 "PLAY_B": CAT_PLAY_B
             }
             art = frames.get(self.buddy_state, CAT_IDLE_A)
-            status_text = " [italic]Begin.[/]" if self.buddy_frame == 0 else " [italic]Focus.[/]" if self.buddy_frame > 0 else ""
+            status_text = " [italic]Begin.[/]" if self.buddy_frame == 0 else " [italic]Focus.[/]"
             buddy_widget.update(Art(art + status_text))
-        except: pass
+        except Exception:
+            pass
 
-    def action_exit_flow_safe(self) -> None:
-        if self.flow_state == "DEEP": self.action_exit_flow()
-        elif len(self.screen_stack) > 1: self.pop_screen()
+    def action_escape_handler(self) -> None:
+        """Global ESC handler - always works."""
+        if len(self.screen_stack) > 1:
+            self.pop_screen()
+        elif self.flow_state == "DEEP":
+            self.action_exit_flow()
 
     def action_toggle_buddy_anim_mode(self) -> None:
         self.buddy_anim_mode = "IDLE_ONLY" if self.buddy_anim_mode == "IDLE_ACTIVE" else "IDLE_ACTIVE"
@@ -299,36 +349,43 @@ class TermFlowApp(App):
     def action_toggle_pomo_visibility(self) -> None:
         self.pomo_visible = not self.pomo_visible
         self.save_current_config()
-        self.query_one("#flow-pomo").set_class(not self.pomo_visible, "hidden")
+        try:
+            self.query_one("#flow-pomo").set_class(not self.pomo_visible, "hidden")
+        except Exception:
+            pass
 
     def action_toggle_reflection_visibility(self) -> None:
         self.reflection_visible = not self.reflection_visible
         self.save_current_config()
-        self.query_one("#flow-reflection").set_class(not self.reflection_visible, "hidden")
+        try:
+            self.query_one("#flow-reflection").set_class(not self.reflection_visible, "hidden")
+        except Exception:
+            pass
 
     def save_current_config(self) -> None:
         config = load_config()
-        config.update({
-            "buddy_enabled": self.buddy_enabled,
-            "buddy_motion": self.buddy_motion,
-            "buddy_anim_mode": self.buddy_anim_mode,
-            "buddy_position": self.buddy_position,
-            "pomo_visible": self.pomo_visible,
-            "reflection_visible": self.reflection_visible
-        })
+        config["buddy_enabled"] = self.buddy_enabled
+        config["buddy_motion"] = self.buddy_motion
+        config["buddy_anim_mode"] = self.buddy_anim_mode
+        config["buddy_position"] = self.buddy_position
+        config["pomo_visible"] = self.pomo_visible
+        config["reflection_visible"] = self.reflection_visible
         save_config(config)
 
     def update_buddy_layout(self) -> None:
         if self.flow_state == "DEEP":
-            container = self.query_one("#flow-container", Horizontal)
-            buddy_widget = self.query_one("#focus-buddy", Static)
-            container.remove_class("pos-left", "pos-right", "pos-inline")
-            if self.buddy_enabled:
-                container.add_class(f"pos-{self.buddy_position}")
-                buddy_widget.remove_class("hidden")
-                self.update_buddy_art()
-            else:
-                buddy_widget.add_class("hidden")
+            try:
+                container = self.query_one("#flow-container", Horizontal)
+                buddy_widget = self.query_one("#focus-buddy", Static)
+                container.remove_class("pos-left", "pos-right", "pos-inline")
+                if self.buddy_enabled:
+                    container.add_class(f"pos-{self.buddy_position}")
+                    buddy_widget.remove_class("hidden")
+                    self.update_buddy_art()
+                else:
+                    buddy_widget.add_class("hidden")
+            except Exception:
+                pass
 
     def compose(self) -> ComposeResult:
         yield Header()
@@ -351,19 +408,28 @@ class TermFlowApp(App):
         yield Footer()
 
     def watch_flow_state(self, state: str) -> None:
-        dashboard = self.query_one("#dashboard-view")
-        flow_view = self.query_one("#flow-container")
+        try:
+            dashboard = self.query_one("#dashboard-view")
+            flow_view = self.query_one("#flow-container")
+        except Exception:
+            return
+            
         if state == "DEEP":
             dashboard.add_class("hidden")
             flow_view.remove_class("hidden")
             self.load_next_flow_task()
             self.update_buddy_layout()
-            self.query_one("#flow-pomo").set_class(not self.pomo_visible, "hidden")
-            self.query_one("#flow-reflection").set_class(not self.reflection_visible, "hidden")
+            try:
+                self.query_one("#flow-pomo").set_class(not self.pomo_visible, "hidden")
+                self.query_one("#flow-reflection").set_class(not self.reflection_visible, "hidden")
+            except Exception:
+                pass
             try:
                 pomo = self.query_one("#flow-pomo", PomodoroPanel)
-                if not pomo.timer_active: pomo.handle_toggle()
-            except: pass
+                if not pomo.timer_active:
+                    pomo.handle_toggle()
+            except Exception:
+                pass
         else:
             dashboard.remove_class("hidden")
             flow_view.add_class("hidden")
@@ -371,12 +437,15 @@ class TermFlowApp(App):
     def load_next_flow_task(self) -> None:
         todos = load_todos()
         active = [t for t in todos if not t.get("completed", False)]
-        if active:
-            self.current_task = active[0]
-            self.query_one("#flow-task", Static).update(f"[bold cyan]Task:[/] {active[0]['task']}")
-        else:
-            self.current_task = None
-            self.query_one("#flow-task", Static).update("[italic]All tasks completed. Add more in dashboard.[/]")
+        try:
+            if active:
+                self.current_task = active[0]
+                self.query_one("#flow-task", Static).update(f"[bold cyan]Task:[/] {active[0]['task']}")
+            else:
+                self.current_task = None
+                self.query_one("#flow-task", Static).update("[italic]All tasks completed. Add more in dashboard.[/]")
+        except Exception:
+            pass
 
     def action_complete_task(self) -> None:
         if self.flow_state == "DEEP" and self.current_task:
@@ -388,8 +457,10 @@ class TermFlowApp(App):
             save_todos(todos)
             self.load_next_flow_task()
 
-    def action_command_palette(self) -> None:
+    def action_open_command_palette(self) -> None:
+        """Open command palette with proper state management."""
         from textual.command import CommandPalette
+        self._palette_open = True
         self.push_screen(CommandPalette())
 
     def action_enter_flow(self) -> None:
@@ -401,19 +472,28 @@ class TermFlowApp(App):
 
     def action_pause_timer(self) -> None:
         selector = "#flow-pomo" if self.flow_state == "DEEP" else "#pomodoro"
-        try: self.query_one(selector, PomodoroPanel).handle_toggle()
-        except: pass
+        try:
+            self.query_one(selector, PomodoroPanel).handle_toggle()
+        except Exception:
+            pass
 
     def action_add_todo(self) -> None:
         if self.flow_state == "IDLE":
-            try: self.query_one(TodoPanel).focus_input()
-            except: pass
+            try:
+                self.query_one(TodoPanel).focus_input()
+            except Exception:
+                pass
 
     def action_toggle_help(self) -> None:
-        if self.flow_state == "IDLE": self.push_screen(HelpScreen())
+        self.push_screen(HelpScreen())
 
     def action_toggle_info(self) -> None:
-        if self.flow_state == "IDLE": self.push_screen(InfoScreen())
+        self.push_screen(InfoScreen())
+
+
+def main():
+    TermFlowApp().run()
+
 
 if __name__ == "__main__":
-    TermFlowApp().run()
+    main()
