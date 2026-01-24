@@ -174,7 +174,7 @@ class GeneralProvider(Provider):
         commands = [
             ("Theme: Dark Mode", lambda: setattr(app, 'theme', "builtin:dark"), "Switch to dark theme"),
             ("Theme: Light Mode", lambda: setattr(app, 'theme', "builtin:light"), "Switch to light theme"),
-            ("Keys: Show Help", getattr(app, 'action_toggle_help', lambda: None), "View keyboard shortcuts"),
+            ("Help: Show Guide", getattr(app, 'action_toggle_help', lambda: None), "View keyboard shortcuts"),
             ("Info: About TermFlow", getattr(app, 'action_toggle_info', lambda: None), "App information"),
             ("Quit Application", getattr(app, 'action_quit', lambda: None), "Exit TermFlow"),
         ]
@@ -241,6 +241,7 @@ class TermFlowApp(App):
         Binding("q", "quit", "Quit", show=True),
         Binding("colon", "open_command_palette", "Command Palette", show=False),
         Binding("b", "toggle_buddy", "Toggle Buddy", show=True),
+        Binding("question_mark,f1", "toggle_help", "Help", show=True),
     ]
 
     flow_state = reactive("IDLE")
@@ -267,14 +268,7 @@ class TermFlowApp(App):
         self.set_interval(2.5, self.tick_buddy)
 
     async def on_key(self, event) -> None:
-        if event.key == "h":
-            event.stop()
-            self.action_toggle_help()
-            return
-        if event.key == "i":
-            event.stop()
-            self.action_toggle_info()
-            return
+        pass
 
     def tick_buddy(self) -> None:
         if self.flow_state == "DEEP" and self.buddy_enabled:
