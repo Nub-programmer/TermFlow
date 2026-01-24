@@ -185,9 +185,7 @@ class GeneralProvider(Provider):
                 yield Hit(score if score > 0 else 50, matcher.highlight(name) if query else name, callback, help=help_text)
 
 
-class HelpScreen(ModalScreen):
-    BINDINGS = [Binding("escape", "dismiss", "Close")]
-    
+class HelpScreen(Static):
     def compose(self) -> ComposeResult:
         with VerticalScroll(classes="modal-panel"):
             yield Static("""
@@ -216,9 +214,7 @@ class HelpScreen(ModalScreen):
         """)
 
 
-class InfoScreen(ModalScreen):
-    BINDINGS = [Binding("escape", "dismiss", "Close")]
-    
+class InfoScreen(Static):
     def compose(self) -> ComposeResult:
         with VerticalScroll(classes="modal-panel"):
             yield Static("""
@@ -316,6 +312,13 @@ class TermFlowApp(App):
 
     def action_escape_handler(self) -> None:
         """Global ESC handler - always works."""
+        if self.help_overlay.display:
+            self.help_overlay.display = False
+            return
+        if self.info_overlay.display:
+            self.info_overlay.display = False
+            return
+            
         if len(self.screen_stack) > 1:
             self.pop_screen()
         elif self.flow_state == "DEEP":
@@ -409,6 +412,12 @@ class TermFlowApp(App):
                     yield PomodoroPanel(id="flow-pomo")
                     yield Static("", id="flow-task")
                     yield InfoPanel(id="flow-reflection")
+        self.help_overlay = HelpScreen()
+        self.info_overlay = InfoScreen()
+        yield self.help_overlay
+        yield self.info_overlay
+        self.help_overlay.display = False
+        self.info_overlay.display = False
         yield Footer()
 
     def watch_flow_state(self, state: str) -> None:
@@ -490,25 +499,23 @@ class TermFlowApp(App):
 
     def action_toggle_help(self) -> None:
         if self._palette_open:
-            if len(self.screen_stack) > 1:
-                self.pop_screen()
             self._palette_open = False
-        if isinstance(self.screen, (HelpScreen, InfoScreen)):
-            if len(self.screen_stack) > 1:
-                self.pop_screen()
-        self.set_focus(None)
-        self.push_screen(HelpScreen())
+        
+        if self.help_overlay.display:
+            self.help_overlay.display = False
+        else:
+            self.info_overlay.display = False
+            self.help_overlay.display = True
 
     def action_toggle_info(self) -> None:
         if self._palette_open:
-            if len(self.screen_stack) > 1:
-                self.pop_screen()
             self._palette_open = False
-        if isinstance(self.screen, (HelpScreen, InfoScreen)):
-            if len(self.screen_stack) > 1:
-                self.pop_screen()
-        self.set_focus(None)
-        self.push_screen(InfoScreen())
+            
+        if self.info_overlay.display:
+            self.info_overlay.display = False
+        else:
+            self.help_overlay.display = False
+            self.info_overlay.display = True
 
 
 def main():

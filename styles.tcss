@@ -154,6 +154,18 @@ Grid {
     max-height: 20;
 }
 
+HelpScreen, InfoScreen {
+    layer: overlay;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -10;
+    margin-left: -30;
+    width: 60;
+    height: auto;
+    z-index: 100;
+}
+
 #todo-list {
     height: 1fr;
 }
