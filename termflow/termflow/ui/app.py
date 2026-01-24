@@ -490,19 +490,23 @@ class TermFlowApp(App):
 
     def action_toggle_help(self) -> None:
         if self._palette_open:
-            self.pop_screen()
+            if len(self.screen_stack) > 1:
+                self.pop_screen()
             self._palette_open = False
-        if isinstance(self.screen, HelpScreen) or isinstance(self.screen, InfoScreen):
-            self.pop_screen()
+        if isinstance(self.screen, (HelpScreen, InfoScreen)):
+            if len(self.screen_stack) > 1:
+                self.pop_screen()
         self.set_focus(None)
         self.push_screen(HelpScreen())
 
     def action_toggle_info(self) -> None:
         if self._palette_open:
-            self.pop_screen()
+            if len(self.screen_stack) > 1:
+                self.pop_screen()
             self._palette_open = False
-        if isinstance(self.screen, HelpScreen) or isinstance(self.screen, InfoScreen):
-            self.pop_screen()
+        if isinstance(self.screen, (HelpScreen, InfoScreen)):
+            if len(self.screen_stack) > 1:
+                self.pop_screen()
         self.set_focus(None)
         self.push_screen(InfoScreen())
 

@@ -1,0 +1,33 @@
+~/workspace$ python main.py
+╭──────────────────────────────────────────────────────── Traceback (most recent call last) ────────────────────────────────────────────────────────╮
+│ /home/runner/workspace/termflow/termflow/ui/app.py:493 in action_toggle_help                                                                      │
+│                                                                                                                                                   │
+│   490 │                                                                                                                                           │
+│   491 │   def action_toggle_help(self) -> None:                                                                                                   │
+│   492 │   │   if self._palette_open:                                                                                                              │
+│ ❱ 493 │   │   │   self.pop_screen()                                                                                                               │
+│   494 │   │   │   self._palette_open = False                                                                                                      │
+│   495 │   │   if isinstance(self.screen, HelpScreen) or isinstance(self.screen, InfoScreen):                                                      │
+│   496 │   │   │   self.pop_screen()                                                                                                               │
+│                                                                                                                                                   │
+│ ╭───────────────────────────────────────────── locals ──────────────────────────────────────────────╮                                             │
+│ │ self = TermFlowApp(title='TermFlowApp', classes={'-dark-mode'}, pseudo_classes={'dark', 'focus'}) │                                             │
+│ ╰───────────────────────────────────────────────────────────────────────────────────────────────────╯                                             │
+│                                                                                                                                                   │
+│ /home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/textual/app.py:2976 in pop_screen                                                 │
+│                                                                                                                                                   │
+│   2973 │   │                                                                                                                                      │
+│   2974 │   │   screen_stack = self._screen_stack                                                                                                  │
+│   2975 │   │   if len(screen_stack) <= 1:                                                                                                         │
+│ ❱ 2976 │   │   │   raise ScreenStackError(                                                                                                        │
+│   2977 │   │   │   │   "Can't pop screen; there must be at least one screen on the stack"                                                         │
+│   2978 │   │   │   )                                                                                                                              │
+│   2979                                                                                                                                            │
+│                                                                                                                                                   │
+│ ╭───────────────────────────────────────────────── locals ──────────────────────────────────────────────────╮                                     │
+│ │ screen_stack = [Screen(id='_default')]                                                                    │                                     │
+│ │         self = TermFlowApp(title='TermFlowApp', classes={'-dark-mode'}, pseudo_classes={'dark', 'focus'}) │                                     │
+│ ╰───────────────────────────────────────────────────────────────────────────────────────────────────────────╯                                     │
+╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+ScreenStackError: Can't pop screen; there must be at least one screen on the stack
+~/workspace$ 
