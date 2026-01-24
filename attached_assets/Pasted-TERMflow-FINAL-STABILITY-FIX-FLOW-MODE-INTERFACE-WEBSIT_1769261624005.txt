@@ -1,0 +1,210 @@
+TERMflow – FINAL STABILITY FIX + FLOW MODE INTERFACE + WEBSITE GENERATION
+
+READ CAREFULLY. FOLLOW EXACTLY.
+THIS IS A REPAIR + EXTENSION TASK, NOT A REWRITE.
+
+Everything that currently works MUST continue to work.
+If there is a choice between clever and safe — choose SAFE.
+
+════════════════════════════
+PART 1 — HARD FIX: `h` AND `i`
+════════════════════════════
+
+Problem:
+Pressing `h` or `i` causes layout corruption, blue/black squares, or UI breakage.
+
+MANDATORY FIX (DO NOT PATCH — RECREATE):
+
+1. DELETE all existing implementations of:
+   - `h` key handler
+   - `i` key handler
+   - Any Help / Info widget, panel, container, or placeholder
+   - Any layout slot reserved for them
+
+After deletion:
+Pressing `h` or `i` should do NOTHING.
+
+2. RE-IMPLEMENT Help (`h`) and Info (`i`) CLEANLY with these rules:
+
+Help (`h`) and Info (`i`) MUST be:
+- Floating overlays (absolute / modal layer)
+- NOT part of the main layout tree
+- NOT inside grid / flex / panels
+- NOT reserving width or height
+- NOT affecting Flow Mode layout
+
+Behavior:
+- Press `h` → Help overlay opens
+- Press `i` → Info overlay opens
+- Only ONE overlay can exist at a time
+- Press `ESC` → closes overlay
+- Underlying UI resumes unchanged
+
+NO background blocks
+NO placeholder rectangles
+NO blue or black squares
+
+────────────────
+HELP CONTENT (TEXT ONLY)
+────────────────
+Help MUST explicitly list:
+
+GENERAL
+- :  Open Command Palette
+- ESC  Back / Close
+- f  Toggle Flow Mode
+- Enter  Add task
+- Space  Toggle task
+- Del  Remove task
+
+FLOW MODE
+- Single-task focus (read-only)
+- Pomodoro auto-start
+- Task auto-advance on completion
+
+FLOW MODE INTERFACE SETTINGS
+- Pomodoro ON / OFF
+- Reflection ON / OFF
+- Focus Buddy ON / OFF
+- Focus Buddy Motion ON / OFF
+- Focus Buddy Position:
+  • Left
+  • Right
+  • Inline
+- Buddy Animation Mode:
+  • Idle only
+  • Idle + Active Motion
+
+Help is DISCOVERY.
+No buttons. No interactivity.
+
+────────────────
+INFO CONTENT
+────────────────
+Info overlay shows:
+- TermFlow
+- “A terminal-first deep focus system”
+- Author: Atharv
+- Community: AxonInnova (https://dsc.gg/axoninnova)
+
+════════════════════════════
+PART 2 — FLOW MODE INTERFACE (SAFE IMPLEMENTATION)
+════════════════════════════
+
+Do NOT redesign Flow Mode.
+Do NOT change layout proportions.
+
+Ensure Flow Mode:
+- Shows ONE task at a time
+- Task list is read-only
+- On completion → next task auto-loads
+- Pomodoro panel is COMPACT (no oversized rectangle)
+- Buttons are inline and minimal
+- Reflection panel is optional (toggle-controlled)
+
+Flow Mode Interface controls:
+- Must NOT break Command Palette
+- If palette discovery is unstable, rely on HELP as the source of truth
+- Toggles must apply instantly
+- Settings persist across sessions
+
+════════════════════════════
+PART 3 — COMMAND PALETTE STABILITY
+════════════════════════════
+
+Fix palette so it:
+- Never goes empty
+- Never loses focus
+- Resets search on close
+- Closes automatically when Help or Info opens
+- ESC always exits safely
+
+DO NOT remove any existing commands.
+
+════════════════════════════
+PART 4 — WEBSITE GENERATION (WebFolder)
+════════════════════════════
+
+Inside the folder named EXACTLY:
+WebFolder/
+
+Create these files:
+- index.html
+- style.css
+- script.js
+
+This is a PROFESSIONAL PRODUCT WEBSITE for TermFlow.
+
+────────────
+Website Requirements
+────────────
+
+Style:
+- Modern, clean, dark-themed
+- Subtle animations
+- Smooth hover effects
+- Cursor interaction (magnetic / glow / ripple — subtle, not flashy)
+- Responsive (desktop-first, mobile-safe)
+
+Content Sections:
+1. Hero Section
+   - TermFlow
+   - Tagline: “A terminal-first deep focus system”
+   - Call-to-action buttons:
+     • Download
+     • GitHub / Source (placeholder if needed)
+
+2. Features
+   - Flow Mode (single-task focus)
+   - Pomodoro integration
+   - Reflection system
+   - Focus Buddy (ASCII companion)
+   - Keyboard-first design
+
+3. How It Works
+   - Simple steps to use TermFlow
+   - Key-based workflow explanation
+
+4. Community
+   - AxonInnova
+   - Link: https://dsc.gg/axoninnova
+   - Invite-style section
+
+5. About
+   - Built by Atharv
+   - Philosophy: calm, intentional productivity
+
+6. Footer
+   - © AxonInnova
+   - © Atharv
+   - All rights reserved
+
+────────────
+Technical Rules
+────────────
+- NO frameworks
+- Vanilla HTML/CSS/JS only
+- Clean file separation
+- Comments included
+- Ready for GitHub Pages / Netlify
+
+════════════════════════════
+FINAL REQUIREMENTS
+════════════════════════════
+
+- Do NOT move existing backend files
+- Do NOT rename entry points
+- Do NOT break Replit
+- Focus on stability over cleverness
+
+════════════════════════════
+FINAL RESPONSE FORMAT
+════════════════════════════
+
+After completion, respond with:
+
+- h / i fix status
+- Flow Mode status
+- Command palette status
+- Website generation status
+- Pip status: READY

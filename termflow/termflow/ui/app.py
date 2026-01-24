@@ -190,43 +190,47 @@ class GeneralProvider(Provider):
 
 
 class HelpScreen(ModalScreen):
-    BINDINGS = [Binding("escape", "dismiss", "Close"), Binding("h", "dismiss", "Close")]
+    BINDINGS = [Binding("escape", "dismiss", "Close")]
     
     def compose(self) -> ComposeResult:
         with VerticalScroll(classes="modal-panel"):
             yield Static("""
 [bold underline]TermFlow Keybindings[/]
 
-[bold]F[/]     - Enter Flow Mode (Deep Work)
-[bold]ESC[/]   - Exit Flow Mode / Close Modal
-[bold]P[/]     - Pause/Resume Pomodoro
-[bold]T[/]     - Add New Todo (Dashboard only)
-[bold]B[/]     - Toggle Focus Buddy
-[bold]H / ?[/] - Show this Help screen
-[bold]I[/]     - Show About Info
-[bold]:[/]     - Open Command Palette
-[bold]Q[/]     - Quit Application
+[bold]GENERAL[/]
+[bold]:[/]      - Open Command Palette
+[bold]ESC[/]    - Back / Close
+[bold]F[/]      - Toggle Flow Mode
+[bold]Enter[/]  - Add task
+[bold]Space[/]  - Toggle task
+[bold]Del[/]    - Remove task
 
-[bold]Space[/] - Toggle Todo completion
-[bold]Del[/]   - Remove Todo item
+[bold]FLOW MODE[/]
+- Single-task focus (read-only)
+- Pomodoro auto-start
+- Task auto-advance on completion
+
+[bold]FLOW MODE INTERFACE SETTINGS[/]
+- Pomodoro ON / OFF
+- Reflection ON / OFF
+- Focus Buddy ON / OFF
+- Focus Buddy Motion ON / OFF
+- Focus Buddy Position: Left, Right, Inline
+- Buddy Animation Mode: Idle only, Idle + Active Motion
         """)
 
 
 class InfoScreen(ModalScreen):
-    BINDINGS = [Binding("escape", "dismiss", "Close"), Binding("i", "dismiss", "Close")]
+    BINDINGS = [Binding("escape", "dismiss", "Close")]
     
     def compose(self) -> ComposeResult:
         with VerticalScroll(classes="modal-panel"):
             yield Static("""
 [bold]TermFlow[/]
-Project: TermFlow
-Made by: Axoninova community
-Founder: Atharv
-Invite: https://dsc.gg/axoninnova
+A terminal-first deep focus system
 
-This is a mindset tool designed 
-to reduce cognitive load and 
-enable deep work.
+Author: Atharv
+Community: AxonInnova (https://dsc.gg/axoninnova)
         """)
 
 
@@ -485,9 +489,13 @@ class TermFlowApp(App):
                 pass
 
     def action_toggle_help(self) -> None:
+        if self._palette_open:
+            self.pop_screen()
         self.push_screen(HelpScreen())
 
     def action_toggle_info(self) -> None:
+        if self._palette_open:
+            self.pop_screen()
         self.push_screen(InfoScreen())
 
 
