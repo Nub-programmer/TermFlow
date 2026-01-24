@@ -2,7 +2,6 @@ from textual.app import App, ComposeResult
 from textual.widgets import Header, Footer, Static
 from textual.containers import Grid, VerticalScroll, Horizontal, Container
 from textual.binding import Binding
-from textual.screen import ModalScreen
 from textual.reactive import reactive
 from textual.command import Hit, Hits, Provider
 from rich.text import Text as Art
@@ -117,7 +116,6 @@ ASCII_LOGO = r'''
 [italic dim]your minimalist terminal productivity hub[/]
 '''
 
-
 class FlowModeProvider(Provider):
     """Provides Flow Mode commands only when Flow Mode is active."""
     
@@ -126,7 +124,7 @@ class FlowModeProvider(Provider):
         return self.app
     
     async def search(self, query: str) -> Hits:
-        app = self.app # Use self.app directly
+        app = self.app
         if not hasattr(app, 'flow_state') or getattr(app, 'flow_state', 'IDLE') != "DEEP":
             return
         
@@ -159,7 +157,6 @@ class FlowModeProvider(Provider):
             if not query or score > 0:
                 yield Hit(score if score > 0 else 100, matcher.highlight(name) if query else name, callback, help=help_text)
 
-
 class GeneralProvider(Provider):
     """Provides general commands available in all modes."""
     
@@ -174,8 +171,8 @@ class GeneralProvider(Provider):
         commands = [
             ("Theme: Dark Mode", lambda: setattr(app, 'theme', "builtin:dark"), "Switch to dark theme"),
             ("Theme: Light Mode", lambda: setattr(app, 'theme', "builtin:light"), "Switch to light theme"),
-            ("Help: Show Guide", getattr(app, 'action_toggle_help', lambda: None), "View keyboard shortcuts"),
-            ("Info: About TermFlow", getattr(app, 'action_toggle_info', lambda: None), "App information"),
+            ("Help: View Guide (External)", getattr(app, 'action_open_help', lambda: None), "View HELP.md"),
+            ("Info: About (External)", getattr(app, 'action_open_info', lambda: None), "View INFO.md"),
             ("Quit Application", getattr(app, 'action_quit', lambda: None), "Exit TermFlow"),
         ]
         
@@ -183,48 +180,6 @@ class GeneralProvider(Provider):
             score = matcher.match(name)
             if not query or score > 0:
                 yield Hit(score if score > 0 else 50, matcher.highlight(name) if query else name, callback, help=help_text)
-
-
-class HelpScreen(Static):
-    def compose(self) -> ComposeResult:
-        with VerticalScroll(classes="modal-panel"):
-            yield Static("""
-[bold underline]TermFlow Keybindings[/]
-
-[bold]GENERAL[/]
-[bold]:[/]      - Open Command Palette
-[bold]ESC[/]    - Back / Close
-[bold]F[/]      - Toggle Flow Mode
-[bold]Enter[/]  - Add task
-[bold]Space[/]  - Toggle task
-[bold]Del[/]    - Remove task
-
-[bold]FLOW MODE[/]
-- Single-task focus (read-only)
-- Pomodoro auto-start
-- Task auto-advance on completion
-
-[bold]FLOW MODE INTERFACE SETTINGS[/]
-- Pomodoro ON / OFF
-- Reflection ON / OFF
-- Focus Buddy ON / OFF
-- Focus Buddy Motion ON / OFF
-- Focus Buddy Position: Left, Right, Inline
-- Buddy Animation Mode: Idle only, Idle + Active Motion
-        """)
-
-
-class InfoScreen(Static):
-    def compose(self) -> ComposeResult:
-        with VerticalScroll(classes="modal-panel"):
-            yield Static("""
-[bold]TermFlow[/]
-A terminal-first deep focus system
-
-Author: Atharv
-Community: AxonInnova (https://dsc.gg/axoninnova)
-        """)
-
 
 class TermFlowApp(App):
     CSS_PATH = "styles.tcss"
@@ -313,13 +268,6 @@ class TermFlowApp(App):
 
     def action_escape_handler(self) -> None:
         """Global ESC handler - always works."""
-        if self.help_overlay.display:
-            self.help_overlay.display = False
-            return
-        if self.info_overlay.display:
-            self.info_overlay.display = False
-            return
-            
         if len(self.screen_stack) > 1:
             self.pop_screen()
         elif self.flow_state == "DEEP":
@@ -413,12 +361,6 @@ class TermFlowApp(App):
                     yield PomodoroPanel(id="flow-pomo")
                     yield Static("", id="flow-task")
                     yield InfoPanel(id="flow-reflection")
-        self.help_overlay = HelpScreen()
-        self.info_overlay = InfoScreen()
-        yield self.help_overlay
-        yield self.info_overlay
-        self.help_overlay.display = False
-        self.info_overlay.display = False
         yield Footer()
 
     def watch_flow_state(self, state: str) -> None:
@@ -498,30 +440,16 @@ class TermFlowApp(App):
             except Exception:
                 pass
 
-    def action_toggle_help(self) -> None:
-        if self._palette_open:
-            self._palette_open = False
-        
-        if self.help_overlay.display:
-            self.help_overlay.display = False
-        else:
-            self.info_overlay.display = False
-            self.help_overlay.display = True
+    def action_open_help(self) -> None:
+        from termflow.termflow.utils.open_docs import open_file
+        open_file("HELP.md")
 
-    def action_toggle_info(self) -> None:
-        if self._palette_open:
-            self._palette_open = False
-            
-        if self.info_overlay.display:
-            self.info_overlay.display = False
-        else:
-            self.help_overlay.display = False
-            self.info_overlay.display = True
-
+    def action_open_info(self) -> None:
+        from termflow.termflow.utils.open_docs import open_file
+        open_file("INFO.md")
 
 def main():
     TermFlowApp().run()
-
 
 if __name__ == "__main__":
     main()
