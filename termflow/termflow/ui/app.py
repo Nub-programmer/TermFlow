@@ -269,9 +269,6 @@ class TermFlowApp(App):
         self.reflection_visible = config.get("reflection_visible", True)
         self.set_interval(2.5, self.tick_buddy)
 
-    async def on_key(self, event) -> None:
-        pass
-
     def tick_buddy(self) -> None:
         if self.flow_state == "DEEP" and self.buddy_enabled:
             if self.buddy_motion:
