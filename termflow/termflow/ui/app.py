@@ -242,7 +242,6 @@ class TermFlowApp(App):
         Binding("q", "quit", "Quit", show=True),
         Binding("colon", "open_command_palette", "Command Palette", show=False),
         Binding("b", "toggle_buddy", "Toggle Buddy", show=True),
-        Binding("question_mark,f1", "toggle_help", "Help", show=True),
     ]
 
     flow_state = reactive("IDLE")
