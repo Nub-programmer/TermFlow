@@ -8,6 +8,7 @@ if TYPE_CHECKING:
     from textual.app import ComposeResult
 
 class PomodoroPanel(Static):
+    can_focus = False
     time_left: reactive[int] = reactive(25 * 60)
     timer_active: reactive[bool] = reactive(False)
     sessions: reactive[int] = reactive(0)

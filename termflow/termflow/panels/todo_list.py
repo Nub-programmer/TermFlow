@@ -22,6 +22,7 @@ class TodoItem(ListItem):
 
 class TodoPanel(Static):
     """A panel to manage To-Do items."""
+    can_focus = False
 
     def compose(self) -> ComposeResult:
         yield Label("[bold]My Tasks[/bold]", classes="panel-header")

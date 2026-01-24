@@ -258,6 +258,7 @@ class TermFlowApp(App):
     _palette_open = reactive(False)
 
     def on_mount(self) -> None:
+        self.set_focus(None)
         config = load_config()
         self.buddy_enabled = config.get("buddy_enabled", False)
         self.buddy_motion = config.get("buddy_motion", True)

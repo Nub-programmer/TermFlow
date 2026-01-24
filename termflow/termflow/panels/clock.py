@@ -2,6 +2,7 @@ from datetime import datetime
 from textual.widgets import Static
 
 class ClockPanel(Static):
+    can_focus = False
     def on_mount(self):
         self.set_interval(1, self.update_time)
 

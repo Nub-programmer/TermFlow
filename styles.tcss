@@ -1,3 +1,11 @@
+* {
+    can-focus: false;
+}
+
+Input, Button, ListView, ListItem {
+    can-focus: true;
+}
+
 Header Icon {
     display: block;
     width: auto;

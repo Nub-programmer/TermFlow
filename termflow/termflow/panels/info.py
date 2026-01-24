@@ -3,6 +3,7 @@ from termflow.termflow.utils.weather import get_weather
 from termflow.termflow.utils.quotes import get_quote
 
 class InfoPanel(Static):
+    can_focus = False
     def compose(self):
         yield Label("[bold yellow]Reflection[/]", classes="panel-header")
         yield Label("Loading...", id="reflection")
