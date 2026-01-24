@@ -1,5 +1,10 @@
 * {
+    outline: none;
     can-focus: false;
+}
+
+:focus {
+    outline: none;
 }
 
 Input, Button, ListView, ListItem {

@@ -228,6 +228,11 @@ Community: AxonInnova (https://dsc.gg/axoninnova)
 
 class TermFlowApp(App):
     CSS_PATH = "styles.tcss"
+    CSS = """
+    * {
+        outline: none;
+    }
+    """
     COMMANDS = App.COMMANDS | {FlowModeProvider, GeneralProvider}
     BINDINGS = [
         Binding("f", "enter_flow", "Flow", show=True),
