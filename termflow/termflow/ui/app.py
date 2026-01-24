@@ -238,8 +238,6 @@ class TermFlowApp(App):
         Binding("escape", "escape_handler", "Exit", show=False, priority=True),
         Binding("p", "pause_timer", "Pause", show=True),
         Binding("t", "add_todo", "Add", show=True),
-        Binding("h,question_mark", "toggle_help", "Help", show=True),
-        Binding("i", "toggle_info", "Info", show=True),
         Binding("q", "quit", "Quit", show=True),
         Binding("colon", "open_command_palette", "Command Palette", show=False),
         Binding("b", "toggle_buddy", "Toggle Buddy", show=True),
@@ -267,6 +265,16 @@ class TermFlowApp(App):
         self.pomo_visible = config.get("pomo_visible", True)
         self.reflection_visible = config.get("reflection_visible", True)
         self.set_interval(2.5, self.tick_buddy)
+
+    async def on_key(self, event) -> None:
+        if event.key == "h":
+            event.stop()
+            self.action_toggle_help()
+            return
+        if event.key == "i":
+            event.stop()
+            self.action_toggle_info()
+            return
 
     def tick_buddy(self) -> None:
         if self.flow_state == "DEEP" and self.buddy_enabled:

@@ -1,0 +1,106 @@
+🚨 THE ACTUAL ROOT CAUSE (100% certain now)
+
+In Textual, h and i are reserved navigation keys when:
+
+a Scrollable
+
+a Container
+
+or a Widget with key bindings
+
+is focused anywhere in the app tree
+
+Even if you clear focus, Textual still:
+
+routes h / i through BINDINGS resolution
+
+fails to find a valid target
+
+renders a focus fallback node (that blue/black square)
+
+➡️ That square is Textual’s “no widget accepted this key” placeholder
+➡️ This is why:
+
+it appears instantly
+
+survives modal logic
+
+ignores your fixes
+
+only happens on h / i
+
+does not happen on other keys
+
+This is a Textual key collision, not a bug in your logic.
+
+✅ WHY DELETING h / i IS THE RIGHT IDEA (BUT INCOMPLETE)
+
+You were correct when you said:
+
+what if say delete h and i then make h and i and give it the contents
+
+But the critical missing step is:
+
+You must delete them from the Bindings layer, not just actions
+
+🔧 THE ONLY FIX THAT WORKS (NO ALTERNATIVES)
+
+You must remove h and i from Textual’s global bindings system entirely, then re-register them manually.
+
+✅ DO THIS EXACTLY
+1️⃣ REMOVE h and i from BINDINGS
+
+Anywhere you have:
+
+BINDINGS = [
+    ("h", "toggle_help", "Help"),
+    ("i", "toggle_info", "Info"),
+]
+
+
+👉 DELETE THESE TWO LINES COMPLETELY
+
+2️⃣ HANDLE h / i MANUALLY IN on_key
+
+Add this ONCE, at the App level:
+
+async def on_key(self, event: events.Key) -> None:
+    if event.key == "h":
+        event.stop()
+        await self.action_toggle_help()
+        return
+
+    if event.key == "i":
+        event.stop()
+        await self.action_toggle_info()
+        return
+
+
+⚠️ event.stop() is MANDATORY
+This prevents Textual’s navigation system from touching the key.
+
+3️⃣ DO NOT RE-ADD THEM TO BINDINGS (IMPORTANT)
+
+h and i must never be in:
+
+BINDINGS
+
+widget bindings
+
+flow widgets
+
+palette commands
+
+They live only in on_key.
+
+🧪 WHY THIS FIX IS FINAL
+
+Textual internally treats h / j / k / l / i as navigation hints
+
+Even without focus, they propagate through the widget tree
+
+Clearing focus ≠ removing key routing
+
+event.stop() is the only hard kill
+
+This is documented behavior in Textual’s input system (but badly explained).
