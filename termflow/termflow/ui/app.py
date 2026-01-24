@@ -126,8 +126,8 @@ class FlowModeProvider(Provider):
         return self.app
     
     async def search(self, query: str) -> Hits:
-        app = self._app
-        if not hasattr(app, 'flow_state') or app.flow_state != "DEEP":
+        app = self.app # Use self.app directly
+        if not hasattr(app, 'flow_state') or getattr(app, 'flow_state', 'IDLE') != "DEEP":
             return
         
         matcher = self.matcher(query)
@@ -138,21 +138,20 @@ class FlowModeProvider(Provider):
         motion_status = "ON" if getattr(app, 'buddy_motion', True) else "OFF"
         anim_mode = getattr(app, 'buddy_anim_mode', 'IDLE_ACTIVE')
         anim_status = "Idle + Active" if anim_mode == "IDLE_ACTIVE" else "Idle Only"
-        buddy_pos = getattr(app, 'buddy_position', 'left').title()
         
         commands = [
-            (f"Flow Mode: Pomodoro [{pomo_status}]", app.action_toggle_pomo_visibility, "Toggle timer visibility"),
-            (f"Flow Mode: Reflection [{reflection_status}]", app.action_toggle_reflection_visibility, "Toggle reflection panel"),
-            (f"Flow Mode: Focus Buddy [{buddy_status}]", app.action_toggle_buddy, "Toggle buddy companion"),
+            (f"Flow Mode: Pomodoro [{pomo_status}]", getattr(app, 'action_toggle_pomo_visibility', lambda: None), "Toggle timer visibility"),
+            (f"Flow Mode: Reflection [{reflection_status}]", getattr(app, 'action_toggle_reflection_visibility', lambda: None), "Toggle reflection panel"),
+            (f"Flow Mode: Focus Buddy [{buddy_status}]", getattr(app, 'action_toggle_buddy', lambda: None), "Toggle buddy companion"),
         ]
         
         if getattr(app, 'buddy_enabled', False):
             commands.extend([
-                (f"  Buddy Motion [{motion_status}]", app.action_toggle_buddy_motion, "Toggle animation"),
-                (f"  Buddy Animation Mode [{anim_status}]", app.action_toggle_buddy_anim_mode, "Switch Idle/Full"),
-                (f"  Buddy Position: Left", app.action_set_buddy_left, "Dock left"),
-                (f"  Buddy Position: Right", app.action_set_buddy_right, "Dock right"),
-                (f"  Buddy Position: Inline", app.action_set_buddy_inline, "Use empty space"),
+                (f"  Buddy Motion [{motion_status}]", getattr(app, 'action_toggle_buddy_motion', lambda: None), "Toggle animation"),
+                (f"  Buddy Animation Mode [{anim_status}]", getattr(app, 'action_toggle_buddy_anim_mode', lambda: None), "Switch Idle/Full"),
+                (f"  Buddy Position: Left", getattr(app, 'action_set_buddy_left', lambda: None), "Dock left"),
+                (f"  Buddy Position: Right", getattr(app, 'action_set_buddy_right', lambda: None), "Dock right"),
+                (f"  Buddy Position: Inline", getattr(app, 'action_set_buddy_inline', lambda: None), "Use empty space"),
             ])
         
         for name, callback, help_text in commands:
@@ -170,17 +169,14 @@ class GeneralProvider(Provider):
     
     async def search(self, query: str) -> Hits:
         matcher = self.matcher(query)
-        app = self._app
-        
-        def set_dark(): app.theme = "builtin:dark"
-        def set_light(): app.theme = "builtin:light"
+        app = self.app
         
         commands = [
-            ("Theme: Dark Mode", set_dark, "Switch to dark theme"),
-            ("Theme: Light Mode", set_light, "Switch to light theme"),
-            ("Keys: Show Help", app.action_toggle_help, "View keyboard shortcuts"),
-            ("Info: About TermFlow", app.action_toggle_info, "App information"),
-            ("Quit Application", app.action_quit, "Exit TermFlow"),
+            ("Theme: Dark Mode", lambda: setattr(app, 'theme', "builtin:dark"), "Switch to dark theme"),
+            ("Theme: Light Mode", lambda: setattr(app, 'theme', "builtin:light"), "Switch to light theme"),
+            ("Keys: Show Help", getattr(app, 'action_toggle_help', lambda: None), "View keyboard shortcuts"),
+            ("Info: About TermFlow", getattr(app, 'action_toggle_info', lambda: None), "App information"),
+            ("Quit Application", getattr(app, 'action_quit', lambda: None), "Exit TermFlow"),
         ]
         
         for name, callback, help_text in commands:
@@ -491,11 +487,13 @@ class TermFlowApp(App):
     def action_toggle_help(self) -> None:
         if self._palette_open:
             self.pop_screen()
+            self._palette_open = False
         self.push_screen(HelpScreen())
 
     def action_toggle_info(self) -> None:
         if self._palette_open:
             self.pop_screen()
+            self._palette_open = False
         self.push_screen(InfoScreen())
 
 
