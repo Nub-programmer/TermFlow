@@ -363,13 +363,14 @@ class TermFlowApp(App):
             pass
 
     def save_current_config(self) -> None:
-        config = load_config()
-        config["buddy_enabled"] = self.buddy_enabled
-        config["buddy_motion"] = self.buddy_motion
-        config["buddy_anim_mode"] = self.buddy_anim_mode
-        config["buddy_position"] = self.buddy_position
-        config["pomo_visible"] = self.pomo_visible
-        config["reflection_visible"] = self.reflection_visible
+        from typing import Any
+        config: dict[str, Any] = load_config()
+        config["buddy_enabled"] = bool(self.buddy_enabled)
+        config["buddy_motion"] = bool(self.buddy_motion)
+        config["buddy_anim_mode"] = str(self.buddy_anim_mode)
+        config["buddy_position"] = str(self.buddy_position)
+        config["pomo_visible"] = bool(self.pomo_visible)
+        config["reflection_visible"] = bool(self.reflection_visible)
         save_config(config)
 
     def update_buddy_layout(self) -> None:
