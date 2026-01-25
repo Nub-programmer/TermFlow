@@ -14,35 +14,46 @@ TermFlow is a minimalist terminal productivity dashboard built with Python and t
 - Improved ESC key handling (works globally in all modes)
 - Added buddy positioning options (Left, Right, Inline)
 - Prepared for pip packaging (internal only)
+- **Standardized Package Structure**: Flattened nested `termflow/termflow` to a single `termflow` package.
+- **PyPI Ready**: Configured `pyproject.toml` and `MANIFEST.in` for professional distribution.
+- **Entry Point Fixed**: Centralized startup logic in `termflow/main.py:run`.
 
 ## User Preferences
 
-Preferred communication style: Simple, everyday language.
+- Preferred communication style: Simple, everyday language.
 
 ## System Architecture
 
 ### Framework & UI Layer
+
 - **Textual Framework**: The entire UI is built using Textual, a Python TUI framework built on Rich for terminal rendering
 - **Panel-Based Layout**: The app uses a modular panel architecture where each feature (clock, todos, pomodoro, info) is an independent widget
 - **Reactive State**: Uses Textual's `reactive` system for real-time UI updates (timer countdown, clock updates)
 
 ### Application Structure
+
 ```
 termflow/
-├── ui/app.py          # Main application class, keybindings, layout composition
+├── core/              # Core application logic
+├── data/              # Default configuration and data files
 ├── panels/            # Independent UI components
 │   ├── clock.py       # Real-time clock widget
 │   ├── todo.py        # Todo list with tag support
 │   ├── pomodoro.py    # Pomodoro timer with session tracking
 │   └── info.py        # Weather and quotes display
-└── utils/             # Data and service utilities
-    ├── storage.py     # Centralized persistence (XDG-compliant paths)
-    ├── todos.py       # Todo CRUD operations (legacy, being migrated)
-    ├── weather.py     # Weather API integration
-    └── quotes.py      # Quotes API integration
+├── ui/                # Main application class and styles
+│   ├── app.py         # App composition and keybindings
+│   └── styles.tcss    # Visual styling
+├── utils/             # Data and service utilities
+│   ├── storage.py     # Centralized persistence (XDG-compliant paths)
+│   ├── todos.py       # Todo CRUD operations
+│   ├── weather.py     # Weather API integration
+│   └── quotes.py      # Quotes API integration
+└── main.py            # Package entry point (run function)
 ```
 
 ### Data Persistence
+
 - **XDG Base Directory Compliance**: Uses `platformdirs` to store data in proper OS locations
   - Config: `~/.config/termflow/config.toml`
   - Data: `~/.local/share/termflow/todos.json`
@@ -50,12 +61,14 @@ termflow/
 - **Graceful Degradation**: All file operations have fallback defaults if files are missing or corrupted
 
 ### Configuration System
+
 - TOML-based configuration file
 - Supports: city (weather), pomodoro_duration, theme
 - Uses `tomli`/`tomllib` for reading, `tomli-w` for writing
 - Provides sensible defaults when config is missing
 
 ### Keyboard-First Design
+
 - All major actions mapped to single keys (a=add, d=delete, space=toggle, p=pomodoro, q=quit)
 - Help overlay accessible via `?` or `h`
 - Tab navigation between panels
@@ -63,6 +76,7 @@ termflow/
 ## External Dependencies
 
 ### Python Packages
+
 - **textual**: TUI framework (core dependency)
 - **rich**: Terminal formatting (used by Textual)
 - **requests**: HTTP client for API calls
@@ -70,10 +84,12 @@ termflow/
 - **tomli/tomli-w**: TOML config parsing and writing
 
 ### External APIs
-- **Open-Meteo API** (`api.open-meteo.com`): Free weather data, no API key required. Uses hardcoded city coordinates for common cities.
-- **DummyJSON Quotes** (`dummyjson.com/quotes`): Random motivational quotes. Falls back to hardcoded quotes on failure.
+
+- **Open-Meteo API** (`api.open-meteo.com`): Free weather data, no API key required.
+- **DummyJSON Quotes** (`dummyjson.com/quotes`): Random motivational quotes.
 
 ### Error Handling for External Services
+
 - All API calls wrapped in try/except with fallback values
 - Weather displays "N/A (Offline)" on failure
 - Quotes fall back to curated offline collection
