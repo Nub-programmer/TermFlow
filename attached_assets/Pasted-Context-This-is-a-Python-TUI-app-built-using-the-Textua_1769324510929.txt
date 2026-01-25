@@ -1,0 +1,83 @@
+Context:
+This is a Python TUI app built using the Textual framework. Be careful not to break existing functionality. Make minimal, safe changes only where requested.
+
+1️⃣ Default Theme Change
+
+Change the default theme of the application to Atom One Dark instead of the current theme.
+
+If the theme is defined in config defaults, update the default value there.
+
+If the theme is set in code, ensure Atom One Dark is applied at startup.
+
+Users should still be able to override the theme via config later.
+
+2️⃣ Fix Flow Mode Logic Bug
+
+There is a bug in Flow Mode Interface where it shows:
+
+"All tasks completed, add tasks in dashboard"
+
+even when tasks exist and are NOT marked as done.
+
+Fix the logic so that:
+
+The message is shown only when the todo list is empty OR all tasks are completed
+
+If even one task is pending, the message must NOT appear
+
+Ensure the logic checks task completion state correctly, not just task count or cached state
+
+Keep the fix clean and readable.
+
+3️⃣ Website (web folder) – Download Instructions
+
+Edit the website inside the web/ folder to include a clear How to Install & Run TermFlow section.
+
+Add instructions that explain:
+
+Installation
+pip install termflow
+
+Run
+termflow
+
+
+Also add a short note like:
+
+“Requires Python 3.8+ and a modern terminal.”
+
+Do not remove existing sections like features—only extend the site cleanly.
+
+4️⃣ Code Comments Style (IMPORTANT)
+
+Rewrite or add comments where you touch code so they:
+
+Do NOT sound AI-generated
+
+Sound like they were written by a teen / student developer
+
+Use casual, Gen-Z-ish phrasing
+
+Examples of comment style:
+
+# this runs on startup so the UI doesn't look dead
+# quick check so we don’t show fake “all done” vibes
+# fallback just in case config gets messed up
+# yeah this looks weird but it fixes a Textual focus bug
+
+
+Keep comments short, informal, and human.
+
+Final Rules
+
+Do NOT refactor unrelated code
+
+Do NOT rename files unless required
+
+Do NOT add unnecessary features
+
+Prioritize stability over cleverness
+
+Keep changes minimal and production-safe
+
+Make sure the app still runs correctly after changes.

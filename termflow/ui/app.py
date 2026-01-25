@@ -214,7 +214,29 @@ class TermFlowApp(App):
 
     def on_mount(self) -> None:
         self.set_focus(None)
+        # textual is picky, we gotta register the theme first
+        from textual.theme import Theme
+        # atom one dark is the vibe we're going for
+        atom_one_dark = Theme(
+            name="atom-one-dark",
+            primary="#61afef",
+            secondary="#c678dd",
+            accent="#56b6c2",
+            warning="#e5c07b",
+            error="#e06c75",
+            success="#98c379",
+            background="#282c34",
+            surface="#2c313a",
+            panel="#3e4452",
+            foreground="#abb2bf",
+            dark=True,
+        )
+        self.register_theme(atom_one_dark)
+        self.theme = "atom-one-dark"
+        
         config = load_config()
+        if "theme" in config:
+            self.theme = config["theme"]
         self.buddy_enabled = config.get("buddy_enabled", False)
         self.buddy_motion = config.get("buddy_motion", True)
         self.buddy_anim_mode = config.get("buddy_anim_mode", "IDLE_ACTIVE")
@@ -392,8 +414,10 @@ class TermFlowApp(App):
 
     def load_next_flow_task(self) -> None:
         todos = load_todos()
+        # only grab stuff that isn't finished yet
         active = [t for t in todos if not t.get("completed", False)]
         try:
+            # check if there's actually anything left to do
             if active:
                 self.current_task = active[0]
                 self.query_one("#flow-task", Static).update(f"[bold cyan]Task:[/] {active[0]['task']}")
