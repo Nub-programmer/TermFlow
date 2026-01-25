@@ -415,6 +415,7 @@ class TermFlowApp(App):
     def load_next_flow_task(self) -> None:
         """Loads the next pending task for Flow Mode."""
         # fresh reload so we don't show ghost tasks
+        from termflow.utils.storage import load_todos
         todos = load_todos()
         
         # look for anything not explicitly marked as done
@@ -431,7 +432,8 @@ class TermFlowApp(App):
             if active:
                 self.current_task = active[0]
                 # update the UI with the first pending task
-                flow_task_widget.update(f"[bold cyan]Task:[/] {active[0].get('task') or active[0].get('text', 'Unnamed Task')}")
+                task_name = active[0].get('task') or active[0].get('text') or 'Unnamed Task'
+                flow_task_widget.update(f"[bold cyan]Task:[/] {task_name}")
             else:
                 self.current_task = None
                 # only show this if the list is actually empty or all done
