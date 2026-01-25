@@ -413,21 +413,36 @@ class TermFlowApp(App):
             flow_view.add_class("hidden")
 
     def load_next_flow_task(self) -> None:
-        # reload fresh todos every time we check
+        """Loads the next pending task for Flow Mode."""
+        # fresh reload so we don't show ghost tasks
         todos = load_todos()
-        # filter for tasks that are not explicitly completed
-        active = [t for t in todos if not t.get("completed")]
+        
+        # look for anything not explicitly marked as done
+        # we check for pending vibes so the UI stays real
+        active = []
+        for t in todos:
+            # check the 'completed' key specifically
+            # use .get() with default False to be super safe
+            is_completed = t.get("completed", False)
+            if is_completed is False:
+                active.append(t)
         
         try:
+            # check if widget is actually there
             flow_task_widget = self.query_one("#flow-task", Static)
             if active:
                 self.current_task = active[0]
+                # update the UI with the first pending task
                 flow_task_widget.update(f"[bold cyan]Task:[/] {active[0]['task']}")
             else:
                 self.current_task = None
+                # only show this if the list is actually empty or all done
                 flow_task_widget.update("[italic]All tasks completed. Add more in dashboard.[/]")
+            
+            # force a refresh of the widget just in case
+            flow_task_widget.refresh()
         except Exception:
-            # failsafe if widget isn't ready yet
+            # widget might not be mounted yet, nbd
             pass
 
     def action_complete_task(self) -> None:
