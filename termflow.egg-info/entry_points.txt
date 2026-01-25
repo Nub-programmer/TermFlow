@@ -1,2 +1,2 @@
 [console_scripts]
-termflow = termflow.termflow.ui.app:main
+termflow = termflow.main:run

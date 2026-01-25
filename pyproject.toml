@@ -1,27 +1,26 @@
-[project]
-name = "termflow"
-version = "1.0.0"
-authors = [
-    { name="Atharv", email="founder@axoninnova.com" },
-]
-description = "A minimalist terminal productivity dashboard"
-readme = "README.md"
-requires-python = ">=3.11"
-dependencies = [
-    "platformdirs>=4.5.1",
-    "requests>=2.32.5",
-    "rich>=14.2.0",
-    "textual>=7.3.0",
-    "tomli>=2.4.0",
-    "tomli-w>=1.2.0",
-]
-
-[project.scripts]
-termflow = "termflow.termflow.ui.app:main"
-
 [build-system]
 requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "termflow"
+version = "0.1.0"
+description = "A minimalist terminal productivity hub built with Textual"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "textual",
+    "platformdirs>=4.5.1",
+    "requests>=2.32.5",
+    "rich>=14.2.0",
+    "tomli>=2.4.0",
+    "tomli-w>=1.2.0",
+    "build>=1.4.0",
+    "twine>=6.2.0",
+]
+
+[project.scripts]
+termflow = "termflow.main:run"
 
 [tool.setuptools.packages.find]
 where = ["."]

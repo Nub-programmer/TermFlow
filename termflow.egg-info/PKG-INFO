@@ -1,16 +1,17 @@
 Metadata-Version: 2.4
 Name: termflow
-Version: 1.0.0
-Summary: A minimalist terminal productivity dashboard
-Author-email: Atharv <founder@axoninnova.com>
-Requires-Python: >=3.11
+Version: 0.1.0
+Summary: A minimalist terminal productivity hub built with Textual
+Requires-Python: >=3.10
 Description-Content-Type: text/markdown
+Requires-Dist: textual
 Requires-Dist: platformdirs>=4.5.1
 Requires-Dist: requests>=2.32.5
 Requires-Dist: rich>=14.2.0
-Requires-Dist: textual>=7.3.0
 Requires-Dist: tomli>=2.4.0
 Requires-Dist: tomli-w>=1.2.0
+Requires-Dist: build>=1.4.0
+Requires-Dist: twine>=6.2.0
 
 # TermFlow
 
