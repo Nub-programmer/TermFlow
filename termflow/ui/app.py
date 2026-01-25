@@ -413,18 +413,21 @@ class TermFlowApp(App):
             flow_view.add_class("hidden")
 
     def load_next_flow_task(self) -> None:
+        # reload fresh todos every time we check
         todos = load_todos()
-        # only grab stuff that isn't finished yet
-        active = [t for t in todos if not t.get("completed", False)]
+        # filter for tasks that are not explicitly completed
+        active = [t for t in todos if not t.get("completed")]
+        
         try:
-            # check if there's actually anything left to do
+            flow_task_widget = self.query_one("#flow-task", Static)
             if active:
                 self.current_task = active[0]
-                self.query_one("#flow-task", Static).update(f"[bold cyan]Task:[/] {active[0]['task']}")
+                flow_task_widget.update(f"[bold cyan]Task:[/] {active[0]['task']}")
             else:
                 self.current_task = None
-                self.query_one("#flow-task", Static).update("[italic]All tasks completed. Add more in dashboard.[/]")
+                flow_task_widget.update("[italic]All tasks completed. Add more in dashboard.[/]")
         except Exception:
+            # failsafe if widget isn't ready yet
             pass
 
     def action_complete_task(self) -> None:
