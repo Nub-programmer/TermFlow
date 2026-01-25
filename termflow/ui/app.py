@@ -418,13 +418,11 @@ class TermFlowApp(App):
         todos = load_todos()
         
         # look for anything not explicitly marked as done
-        # we check for pending vibes so the UI stays real
+        # we check both 'completed' and 'done' keys because we're flexible like that
         active = []
         for t in todos:
-            # check the 'completed' key specifically
-            # use .get() with default False to be super safe
-            is_completed = t.get("completed", False)
-            if is_completed is False:
+            is_completed = t.get("completed", False) or t.get("done", False)
+            if not is_completed:
                 active.append(t)
         
         try:
@@ -433,7 +431,7 @@ class TermFlowApp(App):
             if active:
                 self.current_task = active[0]
                 # update the UI with the first pending task
-                flow_task_widget.update(f"[bold cyan]Task:[/] {active[0]['task']}")
+                flow_task_widget.update(f"[bold cyan]Task:[/] {active[0].get('task') or active[0].get('text', 'Unnamed Task')}")
             else:
                 self.current_task = None
                 # only show this if the list is actually empty or all done
@@ -449,8 +447,14 @@ class TermFlowApp(App):
         if self.flow_state == "DEEP" and self.current_task:
             todos = load_todos()
             for t in todos:
-                if t['task'] == self.current_task['task']:
+                # check both potential keys for identifying the task
+                task_text = t.get('task') or t.get('text')
+                current_task_text = self.current_task.get('task') or self.current_task.get('text')
+                
+                if task_text == current_task_text:
+                    # sync both keys for maximum compatibility
                     t['completed'] = True
+                    t['done'] = True
                     break
             save_todos(todos)
             self.load_next_flow_task()
