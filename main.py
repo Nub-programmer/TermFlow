@@ -1,4 +1,4 @@
-from termflow.termflow.ui.app import TermFlowApp
+from termflow.ui.app import TermFlowApp
 import sys
 
 def main():
