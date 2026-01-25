@@ -3,7 +3,7 @@ import json
 from pathlib import Path
 
 # Use local data directory for Replit compatibility
-DATA_DIR = Path("termflow/termflow/data")
+DATA_DIR = Path("termflow/data")
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 TODO_FILE = DATA_DIR / "todos.json"

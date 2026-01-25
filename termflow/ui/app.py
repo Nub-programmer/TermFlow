@@ -5,11 +5,11 @@ from textual.binding import Binding
 from textual.reactive import reactive
 from textual.command import Hit, Hits, Provider
 from rich.text import Text as Art
-from termflow.termflow.panels.clock import ClockPanel
-from termflow.termflow.panels.todo_list import TodoPanel
-from termflow.termflow.panels.pomodoro import PomodoroPanel
-from termflow.termflow.panels.info import InfoPanel
-from termflow.termflow.utils.storage import load_config, save_config, load_todos, save_todos
+from termflow.panels.clock import ClockPanel
+from termflow.panels.todo_list import TodoPanel
+from termflow.panels.pomodoro import PomodoroPanel
+from termflow.panels.info import InfoPanel
+from termflow.utils.storage import load_config, save_config, load_todos, save_todos
 
 CAT_IDLE_A = r'''
          _     _
@@ -441,11 +441,11 @@ class TermFlowApp(App):
                 pass
 
     def action_open_help(self) -> None:
-        from termflow.termflow.utils.open_docs import open_file
+        from termflow.utils.open_docs import open_file
         open_file("HELP.md")
 
     def action_open_info(self) -> None:
-        from termflow.termflow.utils.open_docs import open_file
+        from termflow.utils.open_docs import open_file
         open_file("INFO.md")
 
 def main():

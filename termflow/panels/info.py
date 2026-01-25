@@ -1,6 +1,6 @@
 from textual.widgets import Static, Label
-from termflow.termflow.utils.weather import get_weather
-from termflow.termflow.utils.quotes import get_quote
+from termflow.utils.weather import get_weather
+from termflow.utils.quotes import get_quote
 
 class InfoPanel(Static):
     can_focus = False

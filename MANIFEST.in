@@ -1,0 +1,16 @@
+include README.md
+include HELP.md
+include INFO.md
+include styles.tcss
+recursive-include termflow *.py *.tcss *.toml
+exclude .replit
+exclude replit.md
+exclude todos.json
+exclude config.json
+exclude zipFile.zip
+recursive-exclude WebFolder *
+recursive-exclude attached_assets *
+recursive-exclude termflow.egg-info *
+recursive-exclude .pythonlibs *
+recursive-exclude .upm *
+recursive-exclude .config *

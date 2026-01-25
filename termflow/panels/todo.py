@@ -1,5 +1,5 @@
 from textual.widgets import Static, ListView, ListItem, Label, Input
-from termflow.termflow.utils.storage import load_todos, save_todos
+from termflow.utils.storage import load_todos, save_todos
 import re
 
 class TodoPanel(Static):

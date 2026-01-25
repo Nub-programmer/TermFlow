@@ -2,7 +2,7 @@ from textual.app import ComposeResult
 from textual.widgets import Static, ListView, ListItem, Label, Input, Button
 from textual.containers import Vertical, Horizontal
 from textual.message import Message
-from termflow.termflow.utils.todos import load_todos, add_todo, toggle_todo, delete_todo
+from termflow.utils.todos import load_todos, add_todo, toggle_todo, delete_todo
 
 class TodoItem(ListItem):
     """A single todo item widget."""
