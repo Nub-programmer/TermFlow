@@ -2,7 +2,7 @@ from textual.app import ComposeResult
 from textual.widgets import Static, ListView, ListItem, Label, Input, Button
 from textual.containers import Vertical, Horizontal
 from textual.message import Message
-from termflow.utils.todos import load_todos, add_todo, toggle_todo, delete_todo
+from termflow.utils.todos import add_todo, toggle_todo, delete_todo
 
 class TodoItem(ListItem):
     """A single todo item widget."""
@@ -46,13 +46,14 @@ class TodoPanel(Static):
         list_view = self.query_one("#todo-list", ListView)
         list_view.clear()
         
+        from termflow.utils.todos import load_todos
         todos = load_todos()
         for idx, todo in enumerate(todos):
             # Safe access with multi-key support and graceful fallback
             if not isinstance(todo, dict):
                 continue
                 
-            text = todo.get("text", "Untitled")
+            text = todo.get("text", todo.get("task", "Untitled"))
             # Standardize on 'done' internally while supporting 'completed'
             done = todo.get("done", todo.get("completed", False))
             

@@ -415,14 +415,14 @@ class TermFlowApp(App):
     def load_next_flow_task(self) -> None:
         """Loads the next pending task for Flow Mode."""
         # fresh reload so we don't show ghost tasks
-        from termflow.utils.storage import load_todos
+        from termflow.utils.todos import load_todos
         todos = load_todos()
         
         # look for anything not explicitly marked as done
         # we check both 'completed' and 'done' keys because we're flexible like that
         active = []
         for t in todos:
-            is_completed = t.get("completed", False) or t.get("done", False)
+            is_completed = t.get("done", t.get("completed", False))
             if not is_completed:
                 active.append(t)
         
@@ -432,7 +432,7 @@ class TermFlowApp(App):
             if active:
                 self.current_task = active[0]
                 # update the UI with the first pending task
-                task_name = active[0].get('task') or active[0].get('text') or 'Unnamed Task'
+                task_name = active[0].get('text', active[0].get('task', 'Unnamed Task'))
                 flow_task_widget.update(f"[bold cyan]Task:[/] {task_name}")
             else:
                 self.current_task = None
@@ -447,11 +447,12 @@ class TermFlowApp(App):
 
     def action_complete_task(self) -> None:
         if self.flow_state == "DEEP" and self.current_task:
+            from termflow.utils.todos import load_todos, save_todos
             todos = load_todos()
             for t in todos:
                 # check both potential keys for identifying the task
-                task_text = t.get('task') or t.get('text')
-                current_task_text = self.current_task.get('task') or self.current_task.get('text')
+                task_text = t.get('text') or t.get('task')
+                current_task_text = self.current_task.get('text') or self.current_task.get('task')
                 
                 if task_text == current_task_text:
                     # sync both keys for maximum compatibility

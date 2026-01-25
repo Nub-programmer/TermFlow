@@ -1,12 +1,25 @@
 import json
 import os
+from pathlib import Path
 from typing import List, Dict
 
-TODO_FILE = "todos.json"
+# Standardize path for both app and dashboard
+TODO_FILE = Path("termflow/data/todos.json")
 
 def load_todos() -> List[Dict]:
     """Loads todos from the local JSON file."""
-    if not os.path.exists(TODO_FILE):
+    if not TODO_FILE.exists():
+        # Fallback to root for migration
+        root_file = Path("todos.json")
+        if root_file.exists():
+            try:
+                with open(root_file, "r") as f:
+                    data = json.load(f)
+                save_todos(data)
+                root_file.unlink()
+                return data
+            except:
+                pass
         return []
     
     try:
@@ -22,13 +35,16 @@ def load_todos() -> List[Dict]:
 def save_todos(todos: List[Dict]):
     """Saves todos to the local JSON file."""
     try:
+        # Ensure directory exists
+        TODO_FILE.parent.mkdir(parents=True, exist_ok=True)
+        
         # Cleanup before saving to maintain consistency
         clean_todos = []
         for todo in todos:
             if isinstance(todo, dict):
                 # Ensure we use 'done' as the standard key
                 done = todo.get("done", todo.get("completed", False))
-                text = todo.get("text", "Untitled")
+                text = todo.get("text", todo.get("task", "Untitled"))
                 clean_todos.append({"text": text, "done": done})
         
         with open(TODO_FILE, "w") as f:
