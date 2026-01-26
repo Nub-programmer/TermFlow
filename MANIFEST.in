@@ -1,16 +1,25 @@
+# ---- Core docs ----
 include README.md
-include HELP.md
-include INFO.md
-include styles.tcss
-recursive-include termflow *.py *.tcss *.toml
+
+# ---- Python package files ----
+recursive-include termflow *.py *.tcss *.toml *.json *.md
+
+# ---- Explicit exclusions (dev / platform junk) ----
 exclude .replit
 exclude replit.md
 exclude todos.json
 exclude config.json
 exclude zipFile.zip
+exclude HELP.md
+exclude INFO.md
+exclude styles.tcss
+
+# ---- Hard ignores ----
 recursive-exclude WebFolder *
 recursive-exclude attached_assets *
 recursive-exclude termflow.egg-info *
 recursive-exclude .pythonlibs *
 recursive-exclude .upm *
 recursive-exclude .config *
+recursive-exclude __pycache__ *
+recursive-exclude *.pyc

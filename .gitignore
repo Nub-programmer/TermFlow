@@ -1,6 +1,29 @@
+#some previous stuff
 node_modules
 dist
 .DS_Store
 server/public
 vite.config.ts.*
 *.tar.gz
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+.venv/
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+
+# Replit / Agents / Editor junk
+.replit
+.agent/
+.config/
+.local/
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,29 +1,18 @@
 import json
-import os
 from pathlib import Path
 from typing import List, Dict
+from termflow.utils.resources import get_user_data_file
 
-# Standardize path for both app and dashboard
-TODO_FILE = Path("termflow/data/todos.json")
 
 def load_todos() -> List[Dict]:
-    """Loads todos from the local JSON file."""
-    if not TODO_FILE.exists():
-        # Fallback to root for migration
-        root_file = Path("todos.json")
-        if root_file.exists():
-            try:
-                with open(root_file, "r") as f:
-                    data = json.load(f)
-                save_todos(data)
-                root_file.unlink()
-                return data
-            except:
-                pass
+    """Loads todos from the user's data directory."""
+    todo_file = get_user_data_file("todos.json")
+    
+    if not todo_file.exists():
         return []
     
     try:
-        with open(TODO_FILE, "r") as f:
+        with open(todo_file, "r") as f:
             data = json.load(f)
             # Ensure data is a list of dicts
             if not isinstance(data, list):
@@ -32,12 +21,12 @@ def load_todos() -> List[Dict]:
     except (json.JSONDecodeError, IOError):
         return []
 
+
 def save_todos(todos: List[Dict]):
-    """Saves todos to the local JSON file."""
+    """Saves todos to the user's data directory."""
+    todo_file = get_user_data_file("todos.json")
+    
     try:
-        # Ensure directory exists
-        TODO_FILE.parent.mkdir(parents=True, exist_ok=True)
-        
         # Cleanup before saving to maintain consistency
         clean_todos = []
         for todo in todos:
@@ -47,10 +36,11 @@ def save_todos(todos: List[Dict]):
                 text = todo.get("text", todo.get("task", "Untitled"))
                 clean_todos.append({"text": text, "done": done})
         
-        with open(TODO_FILE, "w") as f:
+        with open(todo_file, "w") as f:
             json.dump(clean_todos, f, indent=2)
     except IOError as e:
         print(f"Error saving todos: {e}")
+
 
 def add_todo(text: str) -> List[Dict]:
     """Adds a new todo and returns the updated list."""

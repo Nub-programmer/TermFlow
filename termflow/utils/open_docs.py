@@ -2,9 +2,10 @@ import os
 import sys
 import subprocess
 from pathlib import Path
+from termflow.utils.resources import get_resource_path
 
 def open_file(filename: str):
-    path = Path(filename).resolve()
+    path = get_resource_path(filename)
 
     if not path.exists():
         return

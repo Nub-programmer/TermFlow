@@ -1,0 +1,8 @@
+pomodoro_duration = 25
+pomodoro_sessions_completed = 0
+buddy_enabled = false
+buddy_motion = true
+buddy_anim_mode = "IDLE_ACTIVE"
+buddy_position = "inline"
+pomo_visible = false
+reflection_visible = true

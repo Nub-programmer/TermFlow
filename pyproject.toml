@@ -3,8 +3,8 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "termflow"
-version = "0.1.0"
+name = "termflow-cli"
+version = "0.1.4"
 description = "A minimalist terminal productivity hub built with Textual"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -23,3 +23,16 @@ termflow = "termflow.main:run"
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["termflow*"]
+
+[tool.setuptools.package-data]
+termflow = [
+    "ui/*.tcss",
+    "data/*.toml",
+    "data/*.json",
+    "data/*.md",
+    "data/*.tcss",
+]
+
+[tool.setuptools]
+include-package-data = true
+

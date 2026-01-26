@@ -10,6 +10,7 @@ from termflow.panels.todo_list import TodoPanel
 from termflow.panels.pomodoro import PomodoroPanel
 from termflow.panels.info import InfoPanel
 from termflow.utils.storage import load_config, save_config, load_todos, save_todos
+from termflow.utils.resources import get_ui_resource_path
 
 CAT_IDLE_A = r'''
          _     _
@@ -182,7 +183,7 @@ class GeneralProvider(Provider):
                 yield Hit(score if score > 0 else 50, matcher.highlight(name) if query else name, callback, help=help_text)
 
 class TermFlowApp(App):
-    CSS_PATH = "styles.tcss"
+    CSS_PATH = str(get_ui_resource_path("styles.tcss"))
     CSS = """
     * {
         outline: none;
