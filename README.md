@@ -1,6 +1,6 @@
 # TermFlow
 
-**TermFlow** is a production-grade, minimalist terminal productivity dashboard built entirely in Python using the [Textual](https://textual.textualize.io/) framework. Designed for developers and terminal enthusiasts, it provides a distraction-free environment to manage your time and tasks.
+**TermFlow** or Temrflow-cli ( command line interface) is a production-grade, minimalist terminal productivity dashboard built entirely in Python using the [Textual](https://textual.textualize.io/) framework. Designed for developers and terminal enthusiasts, it provides a distraction-free environment to manage your time and tasks.
 
 ## Features
 
@@ -16,7 +16,7 @@
 Ensure you have Python 3.8+ installed.
 
 ```bash
-pip install textual requests
+pip install termflow-cli
 ```
 
 ## Usage
@@ -24,7 +24,7 @@ pip install textual requests
 Launch the dashboard directly from your terminal:
 
 ```bash
-python main.py
+termflow
 ```
 
 ### Keybindings
