@@ -1,9 +1,6 @@
 # TermFlow
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-**TermFlow** or Temrflow-cli ( command line interface) is a production-grade, minimalist terminal productivity dashboard built entirely in Python using the [Textual](https://textual.textualize.io/) framework. Designed for developers and terminal enthusiasts, it provides a distraction-free environment to manage your time and tasks.
+**In order to add tasks u gotta go to the main dashboard by pressing esc outside the flowmode interface and add it there** <- for flavortown reviewers
+**TermFlow** is a production-grade, minimalist terminal productivity dashboard built entirely in Python using the [Textual](https://textual.textualize.io/) framework. Designed for developers and terminal enthusiasts, it provides a distraction-free environment to manage your time and tasks.
 
 ## Features
 
@@ -16,69 +13,22 @@
 
 ## Installation
 
-Ensure you have Python 3.8+ installed.
+Ensure you have Python 3.10+ installed.
 
 ```bash
 pip install termflow-cli
-=======
-A minimal terminal productivity dashboard built with Python.
-=======
-Minimal terminal productivity dashboard built with Python and the [Textual](https://textual.textualize.io/) TUI framework.
->>>>>>> 9ee4b63 (Update documentation to reflect application features and installation)
-=======
-**TermFlow** is a production-grade, minimalist terminal productivity dashboard built entirely in Python using the [Textual](https://textual.textualize.io/) framework. Designed for developers and terminal enthusiasts, it provides a distraction-free environment to manage your time and tasks.
->>>>>>> cc6955a (Polish and stabilize the terminal dashboard application)
-
-## Features
-
-- **Live Dashboard**: Real-time clock and date display.
-- **Task Management**: Persistent todo list with colored tags (`[dev]`, `[school]`, `[life]`).
-- **Deep Work**: Integrated Pomodoro timer with session tracking.
-- **Contextual Info**: Live weather updates and motivational quotes.
-- **Keyboard-First**: Optimized for speed with comprehensive keybindings.
-- **Lightweight & Portable**: Zero bloat, file-based persistence, and low resource usage.
-
-## Installation
-
-Ensure you have Python 3.8+ installed.
-
-```bash
-<<<<<<< HEAD
-pip install -r requirements.txt
->>>>>>> bf93974 (Remove all web-related files and refactor the project structure)
 ```
 
 ## Usage
-=======
-pip install textual requests
-```
-
-<<<<<<< HEAD
-## Running the App
->>>>>>> 9ee4b63 (Update documentation to reflect application features and installation)
-=======
-## Usage
 
 Launch the dashboard directly from your terminal:
->>>>>>> cc6955a (Polish and stabilize the terminal dashboard application)
 
-<<<<<<< HEAD
-Launch the dashboard directly from your terminal:
-
-=======
->>>>>>> bf93974 (Remove all web-related files and refactor the project structure)
 ```bash
 termflow
 ```
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-### Keybindings
-- ':' : command pallete ( or click the circle on top left and see) 
-=======
 ### Keybindings
 
->>>>>>> cc6955a (Polish and stabilize the terminal dashboard application)
 - `?` : Toggle Help Overlay
 - `q` : Quit Application
 - `Tab` : Cycle focus between panels
@@ -90,7 +40,6 @@ termflow
 
 TermFlow is proud to be part of the **Axoninnoova** ecosystem. We believe in the power of automation and minimalist tooling to multiply human productivity. Our community is dedicated to building the next generation of developer tools that are fast, reliable, and stay out of your way.
 
-<<<<<<< HEAD
 ## Technical Details
 
 TermFlow is a minimal terminal productivity dashboard built with Python and the Textual TUI framework. It provides a live, interactive terminal interface combining several productivity tools: a real-time clock, a persistent todo list, a Pomodoro timer, and an info panel displaying weather and motivational quotes.
@@ -103,38 +52,13 @@ The application is designed to run entirely in the terminal, offering a distract
 - **Styling**: Custom TCSS stylesheet (`styles.tcss`)
 - **Data Storage**: Simple JSON file (`todos.json`) for persistence
 
-=======
->>>>>>> cc6955a (Polish and stabilize the terminal dashboard application)
 ## Credits
 
 - **Atharv**: Founder & Lead Architect.
 - **Axoninnoova Community**: For the continuous feedback and support.
 
 Join our community: [https://dsc.gg/axoninnova](https://dsc.gg/axoninnova)
-<<<<<<< HEAD
 
 ## License
 
 MIT © 2026 TermFlow
-=======
-## Credits
-
-<<<<<<< HEAD
-Made by **Atharv** (founder) and the **Axoninnoova** community.
-Join the community: [https://dsc.gg/axoninnova](https://dsc.gg/axoninnova)
->>>>>>> bf93974 (Remove all web-related files and refactor the project structure)
-=======
-- **Atharv**: Founder and Lead Developer.
-- **Axoninnoova Community**: Supporting the growth of open-source terminal tools.
-  - Join us: [https://dsc.gg/axoninnova](https://dsc.gg/axoninnova)
-
-## License
-
-MIT
->>>>>>> 9ee4b63 (Update documentation to reflect application features and installation)
-=======
-
-## License
-
-MIT © 2026 TermFlow
->>>>>>> cc6955a (Polish and stabilize the terminal dashboard application)
