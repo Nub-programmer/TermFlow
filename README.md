@@ -1,5 +1,5 @@
 # TermFlow
-**In order to add tasks u gotta go to the main dashboard by pressing esc outside the flowmode interface and add it there** <- for flavortown reviewers
+**In order to add tasks u gotta go to the main dashboard by pressing esc outside the flowmode interface and add it there** <- for flavortown reviewers **ALSO USE THE THING IN FULL SCREEN AND STOP REJECTING PLS!**
 **TermFlow** is a production-grade, minimalist terminal productivity dashboard built entirely in Python using the [Textual](https://textual.textualize.io/) framework. Designed for developers and terminal enthusiasts, it provides a distraction-free environment to manage your time and tasks.
 
 ## Features
